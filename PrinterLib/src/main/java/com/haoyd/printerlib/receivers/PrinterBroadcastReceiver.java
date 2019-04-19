@@ -1,4 +1,4 @@
-package com.haoyd.printerlib;
+package com.haoyd.printerlib.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -57,7 +57,7 @@ public class PrinterBroadcastReceiver extends BroadcastReceiver {
      * @param intent
      */
     private void processStatusLogic(Intent intent) {
-        // 业务逻辑的请求码，对应哪里查询做什么操作
+        // 业务逻辑的请求码，对应查询做什么操作
         int requestCode = intent.getIntExtra(GpCom.EXTRA_PRINTER_REQUEST_CODE, -1);
         // 判断请求码，是则进行业务操作
         if (requestCode == MAIN_QUERY_PRINTER_STATUS) {

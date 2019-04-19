@@ -2,7 +2,9 @@ package com.haoyd.printerlib.entities;
 
 import android.text.TextUtils;
 
-public class BluetoothDeviceInfo {
+import java.io.Serializable;
+
+public class BluetoothDeviceInfo implements Serializable {
 
     public static final String GROUP_PAIRED = "我的设备";
     public static final String GROUP_OTHERS = "可用设备";

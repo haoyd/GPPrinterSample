@@ -1,4 +1,4 @@
-package com.haoyd.printerlib;
+package com.haoyd.printerlib.manager;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -17,11 +17,20 @@ import com.gprinter.service.GpPrintService;
 import com.haoyd.printerlib.entities.BluetoothDeviceInfo;
 import com.haoyd.printerlib.liseners.OnPrintResultListener;
 import com.haoyd.printerlib.liseners.OnPrinterConnResultListener;
+import com.haoyd.printerlib.receivers.PrinterBroadcastReceiver;
 import com.haoyd.printerlib.utils.BluetoothUtil;
 
 import static com.haoyd.printerlib.PrinterConstant.DEFAULT_PRINTER_ID;
 import static com.haoyd.printerlib.PrinterConstant.MAIN_QUERY_PRINTER_STATUS;
 
+/**
+ * 该类集成了打印机操作的一些基本功能
+ * 1、连接和断开小票机
+ * 2、判断是否已经连接
+ * 3、获取打印状态
+ * 4、设置打印结果监听
+ * 5、打印小票
+ */
 public class BasePrinterManager {
 
     private Activity mActivity;
@@ -33,6 +42,8 @@ public class BasePrinterManager {
 
     public BasePrinterManager(Activity mActivity) {
         this.mActivity = mActivity;
+
+        printerBroadcastReceiver = new PrinterBroadcastReceiver();
     }
 
     /**
