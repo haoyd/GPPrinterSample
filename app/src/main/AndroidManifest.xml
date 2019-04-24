@@ -26,6 +26,8 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@android:style/Theme.Dialog" />
 
+        <activity android:name="com.haoyd.printerlib.views.PrinterConnActivity" />
+
     </application>
 
 </manifest>
