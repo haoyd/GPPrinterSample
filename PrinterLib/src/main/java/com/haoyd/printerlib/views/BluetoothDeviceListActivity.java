@@ -19,11 +19,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.haoyd.printerlib.PrinterConstant;
 import com.haoyd.printerlib.R;
 import com.haoyd.printerlib.entities.BluetoothDeviceInfo;
 import com.haoyd.printerlib.manager.PrinterManager;
+import com.haoyd.printerlib.receivers.PrinterConnReceiverManager;
 
 import java.util.Set;
 
@@ -40,6 +41,7 @@ public class BluetoothDeviceListActivity extends Activity {
     private ArrayAdapter<String> mNewDevicesArrayAdapter;
 
     private PrinterManager printerManager;
+    private PrinterConnReceiverManager printerConnReceiverManager;
 
 
     @Override
@@ -66,6 +68,21 @@ public class BluetoothDeviceListActivity extends Activity {
 
         printerManager = new PrinterManager(this);
         printerManager.bindService();
+
+        printerConnReceiverManager = new PrinterConnReceiverManager(this);
+
+
+        printerConnReceiverManager.setResultListener(new PrinterConnReceiverManager.OnConnResultListener() {
+            @Override
+            public void onConnSuccess() {
+                Toast.makeText(BluetoothDeviceListActivity.this, "连接成功", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onConnFail(String error) {
+                Toast.makeText(BluetoothDeviceListActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -82,6 +99,7 @@ public class BluetoothDeviceListActivity extends Activity {
             this.unregisterReceiver(mFindBlueToothReceiver);
         }
         printerManager.unbindService();
+        printerConnReceiverManager.unregist();
     }
 
     protected void getDeviceList() {
@@ -178,11 +196,11 @@ public class BluetoothDeviceListActivity extends Activity {
             if (!info.equals(noDevices) && !info.equals(noNewDevice)) {
                 String address = info.substring(info.length() - 17);
                 // Create the result Intent and include the MAC address
-                Intent intent = new Intent();
-                intent.setAction(PrinterConstant.INTENT_ACTION_PRINTER_SELE_RESULT);
-                intent.putExtra(PrinterConstant.DATA_KEY, new BluetoothDeviceInfo(null, address));
-                sendBroadcast(intent);
-                finish();
+//                Intent intent = new Intent();
+//                intent.setAction(PrinterConstant.INTENT_ACTION_PRINTER_SELE_RESULT);
+//                intent.putExtra(PrinterConstant.DATA_KEY, new BluetoothDeviceInfo(null, address));
+//                sendBroadcast(intent);
+//                finish();
                 printerManager.connectToPrinter(new BluetoothDeviceInfo(null, address));
             }
         }

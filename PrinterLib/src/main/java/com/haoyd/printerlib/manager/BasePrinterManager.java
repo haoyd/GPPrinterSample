@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.gprinter.aidl.GpService;
@@ -16,7 +17,6 @@ import com.gprinter.io.GpDevice;
 import com.gprinter.service.GpPrintService;
 import com.haoyd.printerlib.entities.BluetoothDeviceInfo;
 import com.haoyd.printerlib.liseners.OnPrintResultListener;
-import com.haoyd.printerlib.liseners.OnPrinterConnResultListener;
 import com.haoyd.printerlib.receivers.PrinterBroadcastReceiver;
 import com.haoyd.printerlib.utils.BluetoothUtil;
 
@@ -25,7 +25,7 @@ import static com.haoyd.printerlib.PrinterConstant.MAIN_QUERY_PRINTER_STATUS;
 
 /**
  * 该类集成了打印机操作的一些基本功能
- * 1、连接和断开小票机
+ * 1、连接、断开打印机
  * 2、判断是否已经连接
  * 3、获取打印状态
  * 4、设置打印结果监听
@@ -38,7 +38,6 @@ public class BasePrinterManager {
     private GpService mGpService = null;
     private PrinterBroadcastReceiver printerBroadcastReceiver = null;
     private OnPrintResultListener printResultListener;
-    private OnPrinterConnResultListener connResultListener;
 
     public BasePrinterManager(Activity mActivity) {
         this.mActivity = mActivity;
@@ -110,11 +109,6 @@ public class BasePrinterManager {
         }
     }
 
-    public boolean connectToHistoryPrinter() {
-
-        return false;
-    }
-
     /**
      * 指定要连接的打印机
      * @param info
@@ -122,40 +116,35 @@ public class BasePrinterManager {
      */
     public void connectToPrinter(BluetoothDeviceInfo info) {
         if (info == null) {
-            callbackConnectResult(info,false);
+            toast("数据错误");
             return;
         }
 
         if (!BluetoothUtil.isOpening()) {
-            callbackConnectResult(info,false);
+            toast("请先开启蓝牙");
             return;
         }
 
-        int rel = 0;
+        int connStatus = 0;
 
         try {
             // 如果打印机已经连接了，就不要再重复连接了
             if (mGpService != null && mGpService.getPrinterConnectStatus(0) == GpDevice.STATE_CONNECTED) {
-                callbackConnectResult(info,true);
                 return;
             }
 
-            rel = mGpService.openPort(DEFAULT_PRINTER_ID, 4, info.address, 0);
-
+            connStatus = mGpService.openPort(DEFAULT_PRINTER_ID, 4, info.address, 0);
         } catch (Exception e) {
-            callbackConnectResult(info,false);
+            toast("连接失败");
             return;
         }
 
-        GpCom.ERROR_CODE r = GpCom.ERROR_CODE.values()[rel];
+        GpCom.ERROR_CODE r = GpCom.ERROR_CODE.values()[connStatus];
 
         if (r != GpCom.ERROR_CODE.SUCCESS) {
-            Toast.makeText(mActivity, GpCom.getErrorText(r), Toast.LENGTH_SHORT).show();
-            callbackConnectResult(info,true);
+            toast(GpCom.getErrorText(r));
             return;
         }
-
-        callbackConnectResult(info,false);
     }
 
     /**
@@ -170,10 +159,6 @@ public class BasePrinterManager {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
-
-    public void setConnResultListener(OnPrinterConnResultListener connResultListener) {
-        this.connResultListener = connResultListener;
     }
 
     /**
@@ -199,14 +184,12 @@ public class BasePrinterManager {
         return true;
     }
 
-    /**
-     * 回调打印机连接结果
-     * @param result
-     */
-    private void callbackConnectResult(BluetoothDeviceInfo info, boolean result) {
-        if (connResultListener != null) {
-            connResultListener.onResult(info, result);
+    private void toast(String msg) {
+        if (mActivity == null || TextUtils.isEmpty(msg)) {
+            return;
         }
+
+        Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT).show();
     }
 
     class PrinterServiceConnection implements ServiceConnection {

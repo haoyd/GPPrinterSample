@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.haoyd.printerlib.views.PrinterConnActivity;
+import com.haoyd.printerlib.views.BluetoothDeviceListActivity;
 import com.haoyd.printerlib.views.PrinterServiceActivity;
 
 public class MainActivity extends PrinterServiceActivity {
@@ -16,8 +16,8 @@ public class MainActivity extends PrinterServiceActivity {
     }
 
     public void selectPrinter(View view) {
-        startActivity(new Intent(this, PrinterConnActivity.class));
-//        startActivity(new Intent(this, BluetoothDeviceListActivity.class));
+//        startActivity(new Intent(this, PrinterConnActivity.class));
+        startActivity(new Intent(this, BluetoothDeviceListActivity.class));
     }
 
     public void printTicket(View view) {
