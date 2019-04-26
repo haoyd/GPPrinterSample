@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/GPPrinterSample.iml" filepath="$PROJECT_DIR$/GPPrinterSample.iml" />
       <module fileurl="file://$PROJECT_DIR$/PrinterLib/PrinterLib.iml" filepath="$PROJECT_DIR$/PrinterLib/PrinterLib.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gprinter/gprinter.iml" filepath="$PROJECT_DIR$/gprinter/gprinter.iml" />
     </modules>
   </component>
 </project>
