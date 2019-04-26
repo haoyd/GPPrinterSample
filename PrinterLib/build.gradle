@@ -25,11 +25,7 @@ android {
 }
 
 dependencies {
-    api fileTree(dir: 'libs', include: ['gprintersdkv22.jar'])
-    implementation fileTree(dir: 'libs', include: ['jcc-bate-0.7.3.jar'])
-    implementation fileTree(dir: 'libs', include: ['ksoap2-android-assembly-2.5.2-jar-with-dependencies.jar'])
-    implementation fileTree(dir: 'libs', include: ['xUtils-2.6.14.jar'])
-
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation 'junit:junit:4.12'

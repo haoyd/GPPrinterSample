@@ -1,13 +1,8 @@
 package com.haoyd.printerlib.manager;
 
 import android.app.Activity;
-import android.util.Base64;
 
-import com.gprinter.command.EscCommand;
-import com.gprinter.command.GpUtils;
-import com.gprinter.command.EscCommand.JUSTIFICATION;
-
-import java.util.Vector;
+import com.haoyd.printerlib.databuilder.PrintCommand;
 
 
 public class PrinterManager extends BasePrinterManager {
@@ -19,15 +14,13 @@ public class PrinterManager extends BasePrinterManager {
     }
 
     public void printTestTicket() {
-        EscCommand esc = new EscCommand();
-        esc.addInitializePrinter();
-        esc.addSelectJustification(JUSTIFICATION.CENTER);// 设置打印居中
-        esc.addText("Hello World"); // 打印文字
-        esc.addPrintAndFeedLines((byte) 3);
+        String result = new PrintCommand()
+                .addInitLine()
+                .alignCenter()
+                .addText("Hello World")
+                .addMutiFeedLines((short) 3)
+                .build();
 
-        Vector<Byte> datas = esc.getCommand(); // 发送数据
-        byte[] bytes = GpUtils.ByteTo_byte(datas);
-        String result = Base64.encodeToString(bytes, Base64.DEFAULT);
         printTicket(result);
     }
 
