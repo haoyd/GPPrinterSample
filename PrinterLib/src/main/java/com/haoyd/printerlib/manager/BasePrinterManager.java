@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.gprinter.aidl.GpService;
 import com.gprinter.command.GpCom;
 import com.gprinter.io.GpDevice;
+import com.gprinter.io.PortParameters;
 import com.gprinter.service.GpPrintService;
 import com.haoyd.printerlib.entities.BluetoothDeviceInfo;
 import com.haoyd.printerlib.liseners.OnPrintResultListener;
@@ -133,7 +134,7 @@ public class BasePrinterManager {
                 return;
             }
 
-            connStatus = mGpService.openPort(DEFAULT_PRINTER_ID, 4, info.address, 0);
+            connStatus = mGpService.openPort(DEFAULT_PRINTER_ID, PortParameters.BLUETOOTH, info.address, 0);
         } catch (Exception e) {
             toast("连接失败");
             return;

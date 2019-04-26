@@ -4,15 +4,16 @@
 
 package com.gprinter.command;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.List;
-import java.util.ArrayList;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.util.Log;
+
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EscCommand
 {
@@ -99,7 +100,10 @@ public class EscCommand
             }
         }
     }
-    
+
+    /**
+     * 加入跳格符
+     */
     public void addHorTab() {
         final byte[] command = { 9 };
         this.addArrayToCommand(command);
@@ -173,7 +177,11 @@ public class EscCommand
         command[3] = t;
         this.addArrayToCommand(command);
     }
-    
+
+    /**
+     * 设置字符右间距
+     * @param n = n * unit
+     */
     public void addSetRightSideCharacterSpacing(final byte n) {
         final byte[] command = { 27, 32, 0 };
         command[2] = n;
@@ -183,7 +191,7 @@ public class EscCommand
     public Vector<Byte> getCommand() {
         return this.Command;
     }
-    
+
     public void addSelectPrintModes(final FONT font, final ENABLE emphasized, final ENABLE doubleheight, final ENABLE doublewidth, final ENABLE underline) {
         byte temp = 0;
         if (font == FONT.FONTB) {
@@ -205,7 +213,11 @@ public class EscCommand
         command[2] = temp;
         this.addArrayToCommand(command);
     }
-    
+
+    /**
+     * 设置绝对打印位置
+     * @param n
+     */
     public void addSetAbsolutePrintPosition(final short n) {
         final byte[] command = { 27, 36, 0, 0 };
         final byte nl = (byte)(n % 256);
@@ -231,12 +243,19 @@ public class EscCommand
         command[2] = underline.getValue();
         this.addArrayToCommand(command);
     }
-    
+
+    /**
+     * 设置为默认行间距,默认行间距为 3.75 mm 约 30 点
+     */
     public void addSelectDefualtLineSpacing() {
         final byte[] command = { 27, 50 };
         this.addArrayToCommand(command);
     }
-    
+
+    /**
+     * 设置行间距
+     * @param n:行间距为 n* ver_motion_unit 点
+     */
     public void addSetLineSpacing(final byte n) {
         final byte[] command = { 27, 51, 0 };
         command[2] = n;
@@ -270,7 +289,11 @@ public class EscCommand
         command[2] = enabel.getValue();
         this.addArrayToCommand(command);
     }
-    
+
+    /**
+     * 打印并走纸
+     * @param n:走纸距离为 n* ver_motion_unit 点
+     */
     public void addPrintAndFeedPaper(final byte n) {
         final byte[] command = { 27, 74, 0 };
         command[2] = n;
@@ -294,7 +317,11 @@ public class EscCommand
         command[2] = enabel.getValue();
         this.addArrayToCommand(command);
     }
-    
+
+    /**
+     * 将打印位置设置到距当前位置 n 点处
+     * @param n
+     */
     public void addSetRelativePrintPositon(final short n) {
         final byte[] command = { 27, 92, 0, 0 };
         final byte nl = (byte)(n % 256);
@@ -309,7 +336,11 @@ public class EscCommand
         command[2] = just.getValue();
         this.addArrayToCommand(command);
     }
-    
+
+    /**
+     * 打印并走纸 n 行
+     * @param n
+     */
     public void addPrintAndFeedLines(final byte n) {
         final byte[] command = { 27, 100, 0 };
         command[2] = n;
@@ -335,7 +366,12 @@ public class EscCommand
         command[2] = enable.getValue();
         this.addArrayToCommand(command);
     }
-    
+
+    /**
+     * 选择字符横向和纵向放大倍数
+     * @param width 1-8 倍
+     * @param height
+     */
     public void addSetCharcterSize(final WIDTH_ZOOM width, final HEIGHT_ZOOM height) {
         final byte[] command = { 29, 33, 0 };
         byte temp = 0;
@@ -356,7 +392,11 @@ public class EscCommand
         command[2] = position.getValue();
         this.addArrayToCommand(command);
     }
-    
+
+    /**
+     * 设置左边距
+     * @param n: 左边距为 n *hor_motion_unit 点
+     */
     public void addSetLeftMargin(final short n) {
         final byte[] command = { 29, 76, 0, 0 };
         final byte nl = (byte)(n % 256);
@@ -365,7 +405,15 @@ public class EscCommand
         command[3] = nh;
         this.addArrayToCommand(command);
     }
-    
+
+    /**
+     * 横纵向移动单位
+     * Gp58 系列打印机均为203dpi，1mm 约为8点，实际打印宽度为48mm，约384点
+     * 横向移动单位 hor_motion_unit 默认为1点，纵向移动单位 ver_motion_unit 默认为0.5点
+     * 汉字为 24*24 点阵
+     * @param x
+     * @param y
+     */
     public void addSetHorAndVerMotionUnits(final byte x, final byte y) {
         final byte[] command = { 29, 80, 0, 0 };
         command[2] = x;
