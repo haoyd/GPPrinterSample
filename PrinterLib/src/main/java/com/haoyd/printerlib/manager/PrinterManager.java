@@ -12,6 +12,8 @@ import java.util.Vector;
 
 public class PrinterManager extends BasePrinterManager {
 
+    private String curConnName = "";
+
     public PrinterManager(Activity mActivity) {
         super(mActivity);
     }
@@ -27,5 +29,9 @@ public class PrinterManager extends BasePrinterManager {
         byte[] bytes = GpUtils.ByteTo_byte(datas);
         String result = Base64.encodeToString(bytes, Base64.DEFAULT);
         printTicket(result);
+    }
+
+    public void setCurConnName(String curConnName) {
+        this.curConnName = curConnName;
     }
 }

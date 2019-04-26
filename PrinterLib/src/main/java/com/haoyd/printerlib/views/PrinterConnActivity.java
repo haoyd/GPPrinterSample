@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.haoyd.printerlib.R;
 import com.haoyd.printerlib.entities.BluetoothDeviceInfo;
@@ -24,11 +25,12 @@ import com.haoyd.printerlib.interfaces.bluetooth.OnBluetoothPairdChangedListener
 import com.haoyd.printerlib.interfaces.bluetooth.OnFindNewBluetoothListener;
 import com.haoyd.printerlib.interfaces.bluetooth.OnFinishDiscoveryBluetoothListener;
 import com.haoyd.printerlib.manager.BluetoothDeviceManager;
+import com.haoyd.printerlib.manager.PrinterConnectingManager;
 import com.haoyd.printerlib.manager.PrinterListManager;
 import com.haoyd.printerlib.manager.PrinterManager;
+import com.haoyd.printerlib.receivers.PrinterConnReceiverManager;
 import com.haoyd.printerlib.utils.BluetoothUtil;
 import com.haoyd.printerlib.utils.SysBroadcastUtil;
-import com.kaopiz.kprogresshud.KProgressHUD;
 
 public class PrinterConnActivity extends AppCompatActivity {
 
@@ -37,13 +39,15 @@ public class PrinterConnActivity extends AppCompatActivity {
     private static final int STATE_SUCCESS = 2;
     private static final int STATE_EMPTY = 3;
 
+    /**
+     * init views
+     */
     private ImageView icon;
     private TextView tip;
     private ProgressBar progressBar;
     private RecyclerView listView;
     private PrinterEmptyView emptyView;
     private PrinterListAdapter adapter;
-    private KProgressHUD loadHud;
 
     /**
      * init tool
@@ -51,6 +55,7 @@ public class PrinterConnActivity extends AppCompatActivity {
     private BluetoothDeviceManager bluetoothDeviceManager;
     private PrinterManager printerManager;
     private SysBroadcastUtil sysBroadcastUtil;
+    private PrinterConnReceiverManager connReceiverManager;
 
     /**
      * init variables
@@ -59,16 +64,18 @@ public class PrinterConnActivity extends AppCompatActivity {
     private boolean isPairdDeviceBacked = false;
     private String connectedPrinterName = "";
     private boolean canStopConn = false;
-    private boolean isItemClicked = false;
+    private int clickedItem = -1;
 
-    private boolean isFromBDPrint;
-
-
-    private Handler mHandler = new Handler() {
+    private Handler delayProcessStateHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            canStopConn = true;
+            if (printerManager.isConnecting()) {
+                dataManager.addPairdDevice(PrinterConnectingManager.getInstance().getConnectingDeviceInfo());
+                adapter.setData(dataManager.getData());
+                bluetoothDeviceManager.cancelScan();
+                setLoadState(STATE_SUCCESS);
+            }
         }
     };
 
@@ -82,9 +89,10 @@ public class PrinterConnActivity extends AppCompatActivity {
         loadData();
         loadListener();
 
-        bluetoothDeviceManager.scanDevice();
-        setLoadState(STATE_LOADING);
-        mHandler.sendEmptyMessageDelayed(0, 3000);
+        if (doScanWork()) {
+            setLoadState(STATE_LOADING);
+        }
+        delayProcessStateHandler.sendEmptyMessageDelayed(1, 100);
     }
 
     @Override
@@ -98,7 +106,10 @@ public class PrinterConnActivity extends AppCompatActivity {
         bluetoothDeviceManager.cancelScan();
         sysBroadcastUtil.unregistReceiver();
         printerManager.unbindService();
+        connReceiverManager.unregist();
         printerManager = null;
+        delayProcessStateHandler.removeCallbacksAndMessages(null);
+        delayProcessStateHandler = null;
     }
 
     public void initViewById() {
@@ -110,28 +121,19 @@ public class PrinterConnActivity extends AppCompatActivity {
     }
 
     public void loadView() {
-        isFromBDPrint = getIntent().getBooleanExtra("isFromBDPrint", false);
-
         dataManager = new PrinterListManager();
         adapter = new PrinterListAdapter(this);
         adapter.setData(dataManager.getData());
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        listView.setLayoutManager(layoutManager);
-
+        listView.setLayoutManager(new LinearLayoutManager(this));
         listView.setAdapter(adapter);
-
-        loadHud = KProgressHUD.create(this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("连接中，请稍候...")
-                .setDimAmount(0.5f);
     }
 
     public void loadData() {
         sysBroadcastUtil = new SysBroadcastUtil(this);
         bluetoothDeviceManager = new BluetoothDeviceManager(this);
         printerManager = new PrinterManager(this);
+        connReceiverManager = new PrinterConnReceiverManager(this);
         printerManager.bindService();
     }
 
@@ -206,6 +208,22 @@ public class PrinterConnActivity extends AppCompatActivity {
             }
         });
 
+        connReceiverManager.setResultListener(new PrinterConnReceiverManager.OnConnResultListener() {
+            @Override
+            public void onConnSuccess() {
+                setLoadState(STATE_SUCCESS);
+                connectedPrinterName = dataManager.getItem(clickedItem).name;
+                dataManager.selectItem(clickedItem);
+                adapter.notifyDataSetChanged();
+
+                PrinterConnectingManager.getInstance().setConnectingDeviceInfo(dataManager.getItem(clickedItem));
+            }
+
+            @Override
+            public void onConnFail(String error) {
+                toast(error);
+            }
+        });
 
         icon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,10 +242,8 @@ public class PrinterConnActivity extends AppCompatActivity {
         adapter.setItemClickListener(new RecyclerItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                isItemClicked = true;
+                clickedItem = position;
                 bluetoothDeviceManager.cancelScan();
-                loadHud.setLabel("连接中，请稍候...");
-                loadHud.show();
                 printerManager.connectToPrinter(dataManager.getItem(position));
             }
         });
@@ -249,7 +265,11 @@ public class PrinterConnActivity extends AppCompatActivity {
             case STATE_NORMAL:
                 progressBar.setVisibility(View.GONE);
                 tip.setTextColor(Color.parseColor("#33c298"));
-                tip.setText("查找完成");
+                if (printerManager.isConnecting()) {
+                    tip.setText("已连接");
+                } else {
+                    tip.setText("查找完成");
+                }
 
                 if (dataManager.getTotalSize() > 0) {
                     emptyView.hide();
@@ -274,7 +294,7 @@ public class PrinterConnActivity extends AppCompatActivity {
         }
     }
 
-    private void doScanWork() {
+    private boolean doScanWork() {
         if (BluetoothUtil.isOpening()) {
             isPairdDeviceBacked = false;
             dataManager.clear();
@@ -285,6 +305,8 @@ public class PrinterConnActivity extends AppCompatActivity {
 
             bluetoothDeviceManager.scanDevice();
             setLoadState(STATE_LOADING);
+
+            return true;
         } else {
             new AlertDialog.Builder(PrinterConnActivity.this)
                     .setTitle("提示")
@@ -301,6 +323,11 @@ public class PrinterConnActivity extends AppCompatActivity {
                         }
                     })
                     .show();
+            return false;
         }
+    }
+
+    private void toast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }
