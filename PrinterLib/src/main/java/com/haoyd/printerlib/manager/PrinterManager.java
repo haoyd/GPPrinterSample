@@ -20,14 +20,6 @@ public class PrinterManager extends BasePrinterManager {
     public void printTestTicket() {
         PrintCommand cmd = new PrintCommand();
 
-//        cmd.setAbsolutePosition(1)
-//                .addText("商品名")
-//                .setAbsolutePosition(26)
-//                .addText("单价")
-//                .setAbsolutePosition(32)
-//                .addText("数量")
-//                .setAbsolutePosition(42)
-//                .addText("金额");
         cmd.addText("123456789012345678901234567890123456789012345678");
 
         GoodsFormatTemplate goodsFormatTemplate = new GoodsFormatTemplate(cmd);
