@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_centerHorizontal="true"
-            android:src="@mipmap/ic_printer_set_unlinked"/>
+            android:src="@mipmap/gp_ic_printer_set_unlinked"/>
 
         <TextView
             android:id="@+id/tv_printer_conn"

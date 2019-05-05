@@ -33,8 +33,6 @@
             </intent-filter>
         </service>
         <service android:name="com.gprinter.service.AllService" />
-
-        <activity android:name=".views.PrinterConnActivity"></activity>
     </application>
 
 </manifest>

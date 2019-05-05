@@ -10,14 +10,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:src="@mipmap/ic_printer_empty"/>
+        android:src="@mipmap/gp_ic_printer_empty"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="center_horizontal"
-        android:text="@string/printer_empty_msg"
+        android:text="@string/gp_printer_empty_msg"
         android:textColor="#999999"
         android:textSize="14sp"/>
 
@@ -27,7 +27,7 @@
         android:layout_height="36dp"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:background="@drawable/btn_bg_green_rec4"
+        android:background="@drawable/gp_btn_bg_green_rec4"
         android:text="刷新"
         android:textColor="@color/white"
         android:textSize="16sp"/>

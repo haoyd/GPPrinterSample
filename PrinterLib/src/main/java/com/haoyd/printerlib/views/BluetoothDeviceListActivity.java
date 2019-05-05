@@ -49,7 +49,7 @@ public class BluetoothDeviceListActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         //	requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-        setContentView(R.layout.dialog_bluetooth_list);
+        setContentView(R.layout.gp_dialog_bluetooth_list);
         Log.e(DEBUG_TAG, "On Create");
         tvPairedDevice = (TextView) findViewById(R.id.tvPairedDevices);
         lvPairedDevice = (ListView) findViewById(R.id.lvPairedDevices);
@@ -106,9 +106,9 @@ public class BluetoothDeviceListActivity extends Activity {
         // Initialize array adapters. One for already paired devices and
         // one for newly discovered devices
         mPairedDevicesArrayAdapter = new ArrayAdapter<String>(this,
-                R.layout.bluetooth_device_name_item);
+                R.layout.gp_bluetooth_device_name_item);
         mNewDevicesArrayAdapter = new ArrayAdapter<String>(this,
-                R.layout.bluetooth_device_name_item);
+                R.layout.gp_bluetooth_device_name_item);
         lvPairedDevice.setAdapter(mPairedDevicesArrayAdapter);
         lvPairedDevice.setOnItemClickListener(mDeviceClickListener);
         lvNewDevice.setAdapter(mNewDevicesArrayAdapter);

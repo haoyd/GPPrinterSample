@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">PrinterLib</string>
-
-    <string name="printer_empty_msg">无可用打印机\n请确保打印机已开启，并距离您3米以内\n然后点击"刷新"重新连接</string>
+    <string name="gp_printer_empty_msg">无可用打印机\n请确保打印机已开启，并距离您3米以内\n然后点击"刷新"重新连接</string>
 
 </resources>

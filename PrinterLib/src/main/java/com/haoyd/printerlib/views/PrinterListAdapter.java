@@ -24,7 +24,7 @@ public class PrinterListAdapter extends RecyclerView.Adapter<PrinterListHolder> 
 
     @Override
     public PrinterListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = View.inflate(mActivity, R.layout.item_printer, null);
+        View view = View.inflate(mActivity, R.layout.gp_item_printer, null);
         return new PrinterListHolder(view);
     }
 

@@ -25,7 +25,7 @@ public class PrinterEmptyView extends FrameLayout {
     public PrinterEmptyView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        View.inflate(getContext(), R.layout.view_printer_empty, this);
+        View.inflate(getContext(), R.layout.gp_view_printer_empty, this);
 
         confirm = findViewById(R.id.tv_printer_empty_confirm);
     }

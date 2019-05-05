@@ -82,7 +82,7 @@ public class PrinterConnActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_printer_conn);
+        setContentView(R.layout.gp_activity_printer_conn);
 
         initViewById();
         loadView();
@@ -279,14 +279,14 @@ public class PrinterConnActivity extends AppCompatActivity {
                 break;
             case STATE_SUCCESS:
                 progressBar.setVisibility(View.GONE);
-                icon.setImageResource(R.mipmap.ic_printer_set_linked);
+                icon.setImageResource(R.mipmap.gp_ic_printer_set_linked);
                 tip.setTextColor(Color.parseColor("#33c298"));
                 tip.setText("已连接");
                 emptyView.hide();
                 break;
             case STATE_EMPTY:
                 progressBar.setVisibility(View.GONE);
-                icon.setImageResource(R.mipmap.ic_printer_set_unlinked);
+                icon.setImageResource(R.mipmap.gp_ic_printer_set_unlinked);
                 tip.setTextColor(Color.parseColor("#f14f51"));
                 tip.setText("无可用打印机，点击刷新");
                 emptyView.show();
