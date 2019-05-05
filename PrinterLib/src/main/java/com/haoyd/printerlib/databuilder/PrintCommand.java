@@ -12,30 +12,28 @@ import com.gprinter.command.GpUtils;
 
 import java.util.Vector;
 
+/**
+ Gp58 系列打印机均为 203dpi，
+ 1mm 约为 8 点，实际打印宽度为 48mm，约 384 点，
+ 以下方法中横向移动单位 hor_motion_unit 默认 为 1 点，纵向移动单位 ver_motion_unit 默 认为 0.5 点 ，横纵向移动单位可通过 addSetHorAndVerMotionUnits()设置，
+ 汉字为 24*24 点阵
+ */
 public class PrintCommand {
 
     private EscCommand esc;
 
-    protected static final String PRINT_LINE = "------------------------------------------------\n";
-    protected static final String PRINT_PAGE_END_LINE = "- - - - - - x - - - - - - - - - -x- - - - - - - \n";
-    protected static final String PRINT_ONLINE_PAY = "-----已在线支付-----\n\n";
-    protected static final String PRINT_PAY_PREFIX = "-----";
-    protected static final String PRINT_PAY_POSTFIX = "-----\n\n";
-    protected static final int PRINT_TOTAL_LENGTH = 48 * 3;
-    protected static final int MAX_GOODS_NAME_LENGTH = 22 * 3;
-    protected static final short PRINT_UNIT = 43;
+    private static final String PRINT_LINE = "------------------------------------------------\n";
+    private static final String PRINT_PAGE_END_LINE = "- - - - - - x - - - - - - - - - -x- - - - - - - \n";
 
-    protected static final short PRINT_POSITION_0 = 0;
-    protected static final short PRINT_POSITION_1 = 26 * 3;
-    protected static final short PRINT_POSITION_2 = 32 * 3;
-    protected static final short PRINT_POSITION_3 = 42 * 3;
+    // 每个字符所占宽度
+    private static final float WORD_POSITION_UNIT = 12.0f;
 
     public PrintCommand() {
-        this.esc = new EscCommand();
+        esc = new EscCommand();
+        esc.addInitializePrinter();
     }
 
     // ------------------------------------------打印格式--------------------------------------------------
-
 
     /**
      * 设置大字体
@@ -50,6 +48,14 @@ public class PrintCommand {
      */
     public PrintCommand setFontSmall() {
         esc.addSelectPrintModes(FONT.FONTA, ENABLE.OFF, ENABLE.OFF, ENABLE.OFF, ENABLE.OFF);
+        return this;
+    }
+
+    /**
+     * 设置双倍高度
+     */
+    public PrintCommand setFontDoubleHeight() {
+        esc.addSelectPrintModes(FONT.FONTA, ENABLE.OFF, ENABLE.ON, ENABLE.OFF, ENABLE.OFF);
         return this;
     }
 
@@ -89,25 +95,52 @@ public class PrintCommand {
      * 添加多个空行
      * @param lines
      */
-    public PrintCommand addMutiFeedLines(short lines) {
+    public PrintCommand addMutiFeedLines(int lines) {
         esc.addPrintAndFeedLines((byte) lines);
         return this;
     }
 
     /**
      * 设置绝对位置
+     * @param position 位置的范围是从1到48
+     * @return
      */
-    public PrintCommand setAbsolutePosition(short position) {
-        esc.addSetHorAndVerMotionUnits((byte) PRINT_UNIT, (byte) 0);
-        esc.addSetAbsolutePrintPosition((short) (position * 3));
+    public PrintCommand setAbsolutePosition(int position) {
+        /**
+         * 默认 x=200 y= 400
+         * 水平单位为 hor_motion_unit = x/200 点
+         * 垂直单位为 ver_motion_unit = y/200 点
+         */
+        esc.addSetAbsolutePrintPosition((short) ((position - 1) * WORD_POSITION_UNIT));
         return this;
     }
 
     /**
-     * 添加初始空行
+     * 设置为A字符格式
+     * @return
      */
-    public PrintCommand addInitLine() {
+    public PrintCommand setFontA() {
+        esc.addSelectCharacterFont(FONT.FONTA);
+        return this;
+    }
+
+    /**
+     * 设置为B字符格式
+     * @return
+     */
+    public PrintCommand setFontB() {
+        esc.addSelectCharacterFont(FONT.FONTB);
         esc.addInitializePrinter();
+        return this;
+    }
+
+    /**
+     * 设置行间距
+     * @param space 实际间距 = space * ver_motion_unit(默认0.5)
+     * @return
+     */
+    public PrintCommand setLineSpace(int space) {
+        esc.addSetLineSpacing((byte) space);
         return this;
     }
 

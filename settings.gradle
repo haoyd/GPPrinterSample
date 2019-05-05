@@ -1,1 +1,1 @@
-include ':app', ':PrinterLib', ':gprinter'
+include ':app', ':PrinterLib'
