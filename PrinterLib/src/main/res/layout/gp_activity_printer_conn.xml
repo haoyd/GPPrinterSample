@@ -6,6 +6,11 @@
     android:orientation="vertical"
     tools:context=".views.GPPrinterConnActivity">
 
+    <FrameLayout
+        android:id="@+id/fl_printer_conn_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <RelativeLayout
         android:id="@+id/rl_printer_conn_top_container"
         android:layout_width="match_parent"

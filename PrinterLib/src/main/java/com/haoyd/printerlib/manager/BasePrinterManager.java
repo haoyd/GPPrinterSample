@@ -39,7 +39,6 @@ public class BasePrinterManager {
     private PrinterServiceConnection conn = null;
     private GpService mGpService = null;
     private PrinterBroadcastReceiver printerBroadcastReceiver = null;
-    private OnPrintResultListener printResultListener;
 
     public BasePrinterManager(Activity mActivity) {
         this.mActivity = mActivity;
@@ -104,7 +103,6 @@ public class BasePrinterManager {
      * @param listener
      */
     public void setOnPrinterConnResultListener(OnPrintResultListener listener) {
-        printResultListener = listener;
         if (printerBroadcastReceiver != null) {
             printerBroadcastReceiver.setOnPrintResultListener(listener);
         }

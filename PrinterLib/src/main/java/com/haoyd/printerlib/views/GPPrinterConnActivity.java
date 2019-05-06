@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -38,6 +39,7 @@ public class GPPrinterConnActivity extends GPPrinterServiceActivity {
     /**
      * init views
      */
+    private FrameLayout headerContainer;
     private ImageView icon;
     private TextView tip;
     private ProgressBar progressBar;
@@ -104,6 +106,7 @@ public class GPPrinterConnActivity extends GPPrinterServiceActivity {
     }
 
     public void initViewById() {
+        this.headerContainer = findViewById(R.id.fl_printer_conn_header);
         this.listView = findViewById(R.id.rv_printer_conn);
         this.icon = findViewById(R.id.iv_printer_conn_icon);
         this.tip = findViewById(R.id.tv_printer_conn);
@@ -125,6 +128,18 @@ public class GPPrinterConnActivity extends GPPrinterServiceActivity {
         bluetoothDeviceManager = new BluetoothDeviceManager(this);
 
         disconnectWhenFinish = false;
+    }
+
+    /**
+     * 添加头部View
+     * @param view
+     */
+    protected void addHeaderView(View view) {
+        if (view == null) {
+            return;
+        }
+
+        headerContainer.addView(view);
     }
 
     public void loadListener() {
