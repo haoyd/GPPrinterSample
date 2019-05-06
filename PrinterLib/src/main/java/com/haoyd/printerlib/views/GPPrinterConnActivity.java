@@ -123,6 +123,8 @@ public class GPPrinterConnActivity extends GPPrinterServiceActivity {
     public void loadData() {
         sysBroadcastUtil = new SysBroadcastUtil(this);
         bluetoothDeviceManager = new BluetoothDeviceManager(this);
+
+        disconnectWhenFinish = false;
     }
 
     public void loadListener() {

@@ -20,6 +20,11 @@ public class GPPrinterServiceActivity extends AppCompatActivity implements OnPri
     protected PrinterManager printerManager;
     private PrinterConnReceiverManager connReceiverManager;
 
+    /**
+     * Printer Config
+     */
+    protected boolean disconnectWhenFinish = true;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +54,9 @@ public class GPPrinterServiceActivity extends AppCompatActivity implements OnPri
             printerManager.setOnPrinterConnResultListener(this);
         } else {
             // 解绑服务
-            printerManager.disConnectToPrinter();
+            if (disconnectWhenFinish) {
+                printerManager.disConnectToPrinter();
+            }
             printerManager.unbindService();
             connReceiverManager.unregist();
             printerManager = null;
