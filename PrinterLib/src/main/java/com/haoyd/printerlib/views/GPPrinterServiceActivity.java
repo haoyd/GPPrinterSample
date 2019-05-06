@@ -23,7 +23,7 @@ public class GPPrinterServiceActivity extends AppCompatActivity implements OnPri
     /**
      * Printer Config
      */
-    protected boolean disconnectWhenFinish = true;
+    protected boolean disconnectWhenFinish = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
