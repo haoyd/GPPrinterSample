@@ -14,6 +14,9 @@ public class PrinterConnReceiverManager extends BaseReceiverManager {
     private OnConnResultListener resultListener;
     private KProgressHUD hud;
 
+    // 用来记录当前连接状态
+    private int curState = GpDevice.STATE_NONE;
+
     public PrinterConnReceiverManager(Activity activity) {
         super(activity);
 
@@ -34,10 +37,16 @@ public class PrinterConnReceiverManager extends BaseReceiverManager {
             // 连接中
             hud.show();
         } else if (type == GpDevice.STATE_NONE) {
-            // 连接失败
+            // 连接失败 或 断开连接
             hud.dismiss();
             if (resultListener != null) {
-                resultListener.onConnFail("连接失败，请重试");
+                if (curState == GpDevice.STATE_CONNECTING) {
+                    // 如果从正在连接状态转为断开，则为连接失败
+                    resultListener.onConnFail("连接失败，请重试");
+                } else if (curState == GpDevice.STATE_VALID_PRINTER) {
+                    // 如果从成功状态转为断开，则为用户主动断开连接
+                    resultListener.onDisconnect();
+                }
             }
         } else if (type == GpDevice.STATE_VALID_PRINTER) {
             // 连接成功
@@ -52,6 +61,8 @@ public class PrinterConnReceiverManager extends BaseReceiverManager {
                 resultListener.onConnFail("非法打印机，请使用GPrinter");
             }
         }
+
+        curState = type;
     }
 
     public void setResultListener(OnConnResultListener resultListener) {
@@ -62,5 +73,7 @@ public class PrinterConnReceiverManager extends BaseReceiverManager {
         void onConnSuccess();
 
         void onConnFail(String error);
+
+        void onDisconnect();
     }
 }

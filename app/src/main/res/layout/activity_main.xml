@@ -9,20 +9,44 @@
     android:gravity="center_horizontal">
 
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/switch_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="打印机连接状态" />
+        android:text="打印机连接状态"
+        android:checked="false"/>
 
     <Button
         android:id="@+id/button2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="选择打印机"
-        android:onClick="selectPrinter"/>
+        android:text="新页面连接打印机"
+        android:onClick="selectPrinterOnNewPage"/>
 
     <Button
-        android:id="@+id/button3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="弹窗内连接打印机"
+        android:onClick="selectPrinterOnDialog"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="历史记录连接打印机"
+        android:onClick="selectPrinterByHistory"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="清除连接历史记录"
+        android:onClick="clearHistory"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="断开连接"
+        android:onClick="disconnectPrinter"/>
+
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="打印小票"

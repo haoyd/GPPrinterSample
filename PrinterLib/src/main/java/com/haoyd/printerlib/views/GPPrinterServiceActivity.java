@@ -98,6 +98,14 @@ public class GPPrinterServiceActivity extends AppCompatActivity implements OnPri
         toast(error);
     }
 
+    /**
+     * 断开连接
+     */
+    @Override
+    public void onDisconnect() {
+
+    }
+
     private void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }

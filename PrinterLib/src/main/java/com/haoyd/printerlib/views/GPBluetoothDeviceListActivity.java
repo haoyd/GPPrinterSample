@@ -76,11 +76,17 @@ public class GPBluetoothDeviceListActivity extends Activity {
             @Override
             public void onConnSuccess() {
                 Toast.makeText(GPBluetoothDeviceListActivity.this, "连接成功", Toast.LENGTH_SHORT).show();
+                finish();
             }
 
             @Override
             public void onConnFail(String error) {
                 Toast.makeText(GPBluetoothDeviceListActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDisconnect() {
+
             }
         });
     }
@@ -195,12 +201,6 @@ public class GPBluetoothDeviceListActivity extends Activity {
             Log.i("tag", info);
             if (!info.equals(noDevices) && !info.equals(noNewDevice)) {
                 String address = info.substring(info.length() - 17);
-                // Create the result Intent and include the MAC address
-//                Intent intent = new Intent();
-//                intent.setAction(PrinterConstant.INTENT_ACTION_PRINTER_SELE_RESULT);
-//                intent.putExtra(PrinterConstant.DATA_KEY, new BluetoothDeviceInfo(null, address));
-//                sendBroadcast(intent);
-//                finish();
                 printerManager.connectToPrinter(new BluetoothDeviceInfo(null, address));
             }
         }

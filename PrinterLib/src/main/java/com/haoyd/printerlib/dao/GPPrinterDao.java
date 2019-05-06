@@ -60,5 +60,24 @@ public class GPPrinterDao {
         }
     }
 
+    /**
+     * 是否有历史记录
+     * @return
+     */
+    public boolean hasHistoryPrinter() {
+        if (getBluetoothDeviceInfo() == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * 清除历史记录
+     */
+    public void clearHistory() {
+        setBluetoothDeviceInfo(null);
+    }
+
 
 }
