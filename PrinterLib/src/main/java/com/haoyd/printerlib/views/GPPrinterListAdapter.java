@@ -12,24 +12,24 @@ import com.haoyd.printerlib.interfaces.RecyclerItemClickListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrinterListAdapter extends RecyclerView.Adapter<PrinterListHolder> {
+public class GPPrinterListAdapter extends RecyclerView.Adapter<GPPrinterListHolder> {
 
     private Activity mActivity;
     private List<BluetoothDeviceInfo> data = new ArrayList<>();
     private RecyclerItemClickListener itemClickListener;
 
-    public PrinterListAdapter(Activity mActivity) {
+    public GPPrinterListAdapter(Activity mActivity) {
         this.mActivity = mActivity;
     }
 
     @Override
-    public PrinterListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public GPPrinterListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = View.inflate(mActivity, R.layout.gp_item_printer, null);
-        return new PrinterListHolder(view);
+        return new GPPrinterListHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(PrinterListHolder holder, final int position) {
+    public void onBindViewHolder(GPPrinterListHolder holder, final int position) {
         holder.bindData(data.get(position));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

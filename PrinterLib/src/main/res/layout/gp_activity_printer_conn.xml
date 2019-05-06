@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".views.PrinterConnActivity">
+    tools:context=".views.GPPrinterConnActivity">
 
     <RelativeLayout
         android:id="@+id/rl_printer_conn_top_container"
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <com.haoyd.printerlib.views.PrinterEmptyView
+        <com.haoyd.printerlib.views.GPPrinterEmptyView
             android:id="@+id/pev_printer_conn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

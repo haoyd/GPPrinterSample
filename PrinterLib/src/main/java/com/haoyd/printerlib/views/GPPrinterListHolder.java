@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.haoyd.printerlib.R;
 import com.haoyd.printerlib.entities.BluetoothDeviceInfo;
 
-public class PrinterListHolder extends RecyclerView.ViewHolder {
+public class GPPrinterListHolder extends RecyclerView.ViewHolder {
 
     private Context mContext;
 
@@ -18,7 +18,7 @@ public class PrinterListHolder extends RecyclerView.ViewHolder {
     private TextView deviceName;
     private TextView connState;
 
-    public PrinterListHolder(View itemView) {
+    public GPPrinterListHolder(View itemView) {
         super(itemView);
 
         groupName = itemView.findViewById(R.id.tv_item_printer_group);

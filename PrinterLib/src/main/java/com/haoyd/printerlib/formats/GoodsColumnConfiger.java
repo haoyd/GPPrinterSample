@@ -8,7 +8,7 @@ import com.haoyd.printerlib.utils.StringLengthUtil;
 public class GoodsColumnConfiger {
 
     private String name;                    // 列名
-    private int startIndex;                 // 起始位置
+    private int startIndex;                 // 起始位置：如果是左对齐，起始位置按左起始位置；如果右对齐，按右起始位置算起
     private int maxLength = 0;              // 最大宽度
     private boolean alignLeft = true;       // 是否为左对齐
 

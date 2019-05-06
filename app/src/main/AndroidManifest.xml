@@ -22,11 +22,11 @@
         </activity>
 
         <activity
-            android:name="com.haoyd.printerlib.views.BluetoothDeviceListActivity"
+            android:name="com.haoyd.printerlib.views.GPBluetoothDeviceListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@android:style/Theme.Dialog" />
 
-        <activity android:name="com.haoyd.printerlib.views.PrinterConnActivity" />
+        <activity android:name="com.haoyd.printerlib.views.GPPrinterConnActivity" />
 
     </application>
 

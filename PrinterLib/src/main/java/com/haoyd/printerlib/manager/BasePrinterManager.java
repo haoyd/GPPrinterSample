@@ -42,7 +42,6 @@ public class BasePrinterManager {
 
     public BasePrinterManager(Activity mActivity) {
         this.mActivity = mActivity;
-
         printerBroadcastReceiver = new PrinterBroadcastReceiver();
     }
 

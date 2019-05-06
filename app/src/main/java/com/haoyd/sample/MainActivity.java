@@ -4,10 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.haoyd.printerlib.views.PrinterConnActivity;
-import com.haoyd.printerlib.views.PrinterServiceActivity;
+import com.haoyd.printerlib.views.GPPrinterConnActivity;
+import com.haoyd.printerlib.views.GPPrinterServiceActivity;
 
-public class MainActivity extends PrinterServiceActivity {
+public class MainActivity extends GPPrinterServiceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,7 +16,7 @@ public class MainActivity extends PrinterServiceActivity {
     }
 
     public void selectPrinter(View view) {
-        startActivity(new Intent(this, PrinterConnActivity.class));
+        startActivity(new Intent(this, GPPrinterConnActivity.class));
 //        startActivity(new Intent(this, BluetoothDeviceListActivity.class));
     }
 

@@ -10,19 +10,19 @@ import android.widget.FrameLayout;
 import com.haoyd.printerlib.R;
 
 
-public class PrinterEmptyView extends FrameLayout {
+public class GPPrinterEmptyView extends FrameLayout {
 
     private View confirm;
 
-    public PrinterEmptyView(@NonNull Context context) {
+    public GPPrinterEmptyView(@NonNull Context context) {
         this(context, null);
     }
 
-    public PrinterEmptyView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public GPPrinterEmptyView(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PrinterEmptyView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public GPPrinterEmptyView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         View.inflate(getContext(), R.layout.gp_view_printer_empty, this);

@@ -28,7 +28,7 @@ import com.haoyd.printerlib.receivers.PrinterConnReceiverManager;
 
 import java.util.Set;
 
-public class BluetoothDeviceListActivity extends Activity {
+public class GPBluetoothDeviceListActivity extends Activity {
     // Debugging
     private static final String DEBUG_TAG = "DeviceListActivity";
     public static LinearLayout deviceNamelinearLayout;
@@ -75,12 +75,12 @@ public class BluetoothDeviceListActivity extends Activity {
         printerConnReceiverManager.setResultListener(new PrinterConnReceiverManager.OnConnResultListener() {
             @Override
             public void onConnSuccess() {
-                Toast.makeText(BluetoothDeviceListActivity.this, "连接成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(GPBluetoothDeviceListActivity.this, "连接成功", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onConnFail(String error) {
-                Toast.makeText(BluetoothDeviceListActivity.this, error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(GPBluetoothDeviceListActivity.this, error, Toast.LENGTH_SHORT).show();
             }
         });
     }

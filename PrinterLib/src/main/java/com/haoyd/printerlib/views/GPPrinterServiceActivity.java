@@ -3,43 +3,39 @@ package com.haoyd.printerlib.views;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
-import com.haoyd.printerlib.PrinterConstant;
-import com.haoyd.printerlib.entities.BluetoothDeviceInfo;
-import com.haoyd.printerlib.entities.CastInfo;
-import com.haoyd.printerlib.liseners.OnBroadcastResultListener;
 import com.haoyd.printerlib.liseners.OnPrintResultListener;
 import com.haoyd.printerlib.manager.PrinterManager;
-import com.haoyd.printerlib.receivers.GPBroadcastManager;
+import com.haoyd.printerlib.receivers.PrinterConnReceiverManager;
 
-public class PrinterServiceActivity extends AppCompatActivity implements OnBroadcastResultListener, OnPrintResultListener {
+/**
+ * 该类主要有以下几个作用：
+ * 1、初始化打印管理类
+ * 2、监听连接成功与否
+ * 3、监听打印成功与否
+ */
+public class GPPrinterServiceActivity extends AppCompatActivity implements OnPrintResultListener, PrinterConnReceiverManager.OnConnResultListener {
 
-    private GPBroadcastManager castManager;
     protected PrinterManager printerManager;
+    private PrinterConnReceiverManager connReceiverManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        castManager = new GPBroadcastManager();
         printerManager = new PrinterManager(this);
+        connReceiverManager = new PrinterConnReceiverManager(this);
 
         processServiceBindLogic(true);
+
+        connReceiverManager.setResultListener(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         processServiceBindLogic(false);
-    }
-
-    @Override
-    public void onBroadcastResult(CastInfo result) {
-        switch (result.action) {
-            case PrinterConstant.INTENT_ACTION_PRINTER_SELE_RESULT:
-                printerManager.connectToPrinter((BluetoothDeviceInfo) result.obj);
-                break;
-        }
     }
 
     /**
@@ -49,28 +45,53 @@ public class PrinterServiceActivity extends AppCompatActivity implements OnBroad
     private void processServiceBindLogic(boolean isRegist) {
         if (isRegist) {
             // 绑定服务
-
             printerManager.bindService();
             printerManager.setOnPrinterConnResultListener(this);
-
-            castManager.registReceiver(this, PrinterConstant.INTENT_ACTION_PRINTER_SELE_RESULT);
-            castManager.setResultListener(this);
         } else {
             // 解绑服务
             printerManager.disConnectToPrinter();
             printerManager.unbindService();
-            castManager.unregistReceiver(this);
+            connReceiverManager.unregist();
+            printerManager = null;
         }
     }
 
 
+    /**
+     * 打印成功
+     */
     @Override
     public void onPrintSucc() {
 
     }
 
+    /**
+     * 打印失败
+     * @param error 失败原因
+     */
     @Override
     public void onPrintError(String error) {
 
+    }
+
+    /**
+     * 连接成功
+     */
+    @Override
+    public void onConnSuccess() {
+
+    }
+
+    /**
+     * 连接失败
+     * @param error 失败原因
+     */
+    @Override
+    public void onConnFail(String error) {
+        toast(error);
+    }
+
+    private void toast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

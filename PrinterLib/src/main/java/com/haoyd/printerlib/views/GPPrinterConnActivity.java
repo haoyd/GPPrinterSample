@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.haoyd.printerlib.R;
 import com.haoyd.printerlib.entities.BluetoothDeviceInfo;
@@ -27,12 +25,10 @@ import com.haoyd.printerlib.interfaces.bluetooth.OnFinishDiscoveryBluetoothListe
 import com.haoyd.printerlib.manager.BluetoothDeviceManager;
 import com.haoyd.printerlib.manager.PrinterConnectingManager;
 import com.haoyd.printerlib.manager.PrinterListManager;
-import com.haoyd.printerlib.manager.PrinterManager;
-import com.haoyd.printerlib.receivers.PrinterConnReceiverManager;
 import com.haoyd.printerlib.utils.BluetoothUtil;
 import com.haoyd.printerlib.utils.SysBroadcastUtil;
 
-public class PrinterConnActivity extends AppCompatActivity {
+public class GPPrinterConnActivity extends GPPrinterServiceActivity {
 
     private static final int STATE_LOADING = 0;
     private static final int STATE_NORMAL = 1;
@@ -46,16 +42,14 @@ public class PrinterConnActivity extends AppCompatActivity {
     private TextView tip;
     private ProgressBar progressBar;
     private RecyclerView listView;
-    private PrinterEmptyView emptyView;
-    private PrinterListAdapter adapter;
+    private GPPrinterEmptyView emptyView;
+    private GPPrinterListAdapter adapter;
 
     /**
      * init tool
      */
-    private BluetoothDeviceManager bluetoothDeviceManager;
-    private PrinterManager printerManager;
-    private SysBroadcastUtil sysBroadcastUtil;
-    private PrinterConnReceiverManager connReceiverManager;
+    private BluetoothDeviceManager bluetoothDeviceManager;      // 扫描蓝牙设备
+    private SysBroadcastUtil sysBroadcastUtil;                  // 监听蓝牙扫描、配对结果广播
 
     /**
      * init variables
@@ -105,9 +99,6 @@ public class PrinterConnActivity extends AppCompatActivity {
         super.onDestroy();
         bluetoothDeviceManager.cancelScan();
         sysBroadcastUtil.unregistReceiver();
-        printerManager.unbindService();
-        connReceiverManager.unregist();
-        printerManager = null;
         delayProcessStateHandler.removeCallbacksAndMessages(null);
         delayProcessStateHandler = null;
     }
@@ -122,7 +113,7 @@ public class PrinterConnActivity extends AppCompatActivity {
 
     public void loadView() {
         dataManager = new PrinterListManager();
-        adapter = new PrinterListAdapter(this);
+        adapter = new GPPrinterListAdapter(this);
         adapter.setData(dataManager.getData());
 
         listView.setLayoutManager(new LinearLayoutManager(this));
@@ -132,9 +123,6 @@ public class PrinterConnActivity extends AppCompatActivity {
     public void loadData() {
         sysBroadcastUtil = new SysBroadcastUtil(this);
         bluetoothDeviceManager = new BluetoothDeviceManager(this);
-        printerManager = new PrinterManager(this);
-        connReceiverManager = new PrinterConnReceiverManager(this);
-        printerManager.bindService();
     }
 
     public void loadListener() {
@@ -205,23 +193,6 @@ public class PrinterConnActivity extends AppCompatActivity {
             @Override
             public void onDispared(BluetoothDeviceInfo info) {
 
-            }
-        });
-
-        connReceiverManager.setResultListener(new PrinterConnReceiverManager.OnConnResultListener() {
-            @Override
-            public void onConnSuccess() {
-                setLoadState(STATE_SUCCESS);
-                connectedPrinterName = dataManager.getItem(clickedItem).name;
-                dataManager.selectItem(clickedItem);
-                adapter.notifyDataSetChanged();
-
-                PrinterConnectingManager.getInstance().setConnectingDeviceInfo(dataManager.getItem(clickedItem));
-            }
-
-            @Override
-            public void onConnFail(String error) {
-                toast(error);
             }
         });
 
@@ -308,7 +279,7 @@ public class PrinterConnActivity extends AppCompatActivity {
 
             return true;
         } else {
-            new AlertDialog.Builder(PrinterConnActivity.this)
+            new AlertDialog.Builder(GPPrinterConnActivity.this)
                     .setTitle("提示")
                     .setMessage("蓝牙未开启将影响您的正常使用，请打开蓝牙")
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -327,7 +298,14 @@ public class PrinterConnActivity extends AppCompatActivity {
         }
     }
 
-    private void toast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    @Override
+    public void onConnSuccess() {
+        super.onConnSuccess();
+        setLoadState(STATE_SUCCESS);
+        connectedPrinterName = dataManager.getItem(clickedItem).name;
+        dataManager.selectItem(clickedItem);
+        adapter.notifyDataSetChanged();
+
+        PrinterConnectingManager.getInstance().setConnectingDeviceInfo(dataManager.getItem(clickedItem));
     }
 }
