@@ -106,7 +106,7 @@ public class GPPrinterServiceActivity extends AppCompatActivity implements OnPri
 
     }
 
-    private void toast(String msg) {
+    protected void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

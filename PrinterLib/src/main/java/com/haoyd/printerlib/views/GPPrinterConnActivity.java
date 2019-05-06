@@ -216,7 +216,11 @@ public class GPPrinterConnActivity extends GPPrinterServiceActivity {
         icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doScanWork();
+                if (!printerManager.isConnecting()) {
+                    doScanWork();
+                } else {
+                    toast("已连接");
+                }
             }
         });
 

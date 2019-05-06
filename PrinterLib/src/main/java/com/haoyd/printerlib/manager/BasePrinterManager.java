@@ -145,6 +145,7 @@ public class BasePrinterManager {
             return;
         }
 
+        info.isConnected = true;
         GPPrinterDao.getInstance(mActivity).setBluetoothDeviceInfo(info);
     }
 
