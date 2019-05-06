@@ -16,6 +16,7 @@ import com.gprinter.command.GpCom;
 import com.gprinter.io.GpDevice;
 import com.gprinter.io.PortParameters;
 import com.gprinter.service.GpPrintService;
+import com.haoyd.printerlib.dao.GPPrinterDao;
 import com.haoyd.printerlib.entities.BluetoothDeviceInfo;
 import com.haoyd.printerlib.liseners.OnPrintResultListener;
 import com.haoyd.printerlib.receivers.PrinterBroadcastReceiver;
@@ -145,6 +146,8 @@ public class BasePrinterManager {
             toast(GpCom.getErrorText(r));
             return;
         }
+
+        GPPrinterDao.getInstance(mActivity).setBluetoothDeviceInfo(info);
     }
 
     /**
@@ -182,6 +185,17 @@ public class BasePrinterManager {
         }
 
         return true;
+    }
+
+    /**
+     * 连接到历史打印机
+     */
+    public void connToHistoryDevice() {
+        BluetoothDeviceInfo bluetoothDeviceInfo = GPPrinterDao.getInstance(mActivity).getBluetoothDeviceInfo();
+
+        if (bluetoothDeviceInfo != null) {
+            connectToPrinter(bluetoothDeviceInfo);
+        }
     }
 
     private void toast(String msg) {
