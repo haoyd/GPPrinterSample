@@ -27,6 +27,7 @@ public class PrinterBroadcastReceiver extends BroadcastReceiver {
 
     /**
      * 打印结果监听
+     *
      * @param onPrintResultListener
      */
     public void setOnPrintResultListener(OnPrintResultListener onPrintResultListener) {
@@ -68,21 +69,12 @@ public class PrinterBroadcastReceiver extends BroadcastReceiver {
             if (status == GpCom.STATE_NO_ERR) {
                 str += "正常";
             } else {
-                if ((byte) (status & GpCom.STATE_OFFLINE) > 0) {
-                    str += "脱机";
-                }
-                if ((byte) (status & GpCom.STATE_PAPER_ERR) > 0) {
-                    str += "缺纸";
-                }
-                if ((byte) (status & GpCom.STATE_COVER_OPEN) > 0) {
-                    str += "打印机开盖";
-                }
-                if ((byte) (status & GpCom.STATE_ERR_OCCURS) > 0) {
-                    str += "打印机出错";
-                }
-                if ((byte) (status & GpCom.STATE_TIMES_OUT) > 0) {
-                    str += "查询超时";
-                }
+                if ((byte) (status & GpCom.STATE_OFFLINE) > 0) str += "脱机";
+                if ((byte) (status & GpCom.STATE_OFFLINE) > 0) str += "脱机";
+                if ((byte) (status & GpCom.STATE_PAPER_ERR) > 0) str += "缺纸";
+                if ((byte) (status & GpCom.STATE_COVER_OPEN) > 0) str += "打印机开盖";
+                if ((byte) (status & GpCom.STATE_ERR_OCCURS) > 0) str += "打印机出错";
+                if ((byte) (status & GpCom.STATE_TIMES_OUT) > 0) str += "查询超时";
             }
 
             if (!TextUtils.isEmpty(str) && !str.contains("打印机正常")) {
@@ -111,6 +103,7 @@ public class PrinterBroadcastReceiver extends BroadcastReceiver {
 
     /**
      * 打印异常
+     *
      * @param error
      */
     private void printError(String error) {
