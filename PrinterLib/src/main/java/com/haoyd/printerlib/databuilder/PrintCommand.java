@@ -256,6 +256,7 @@ public class PrintCommand {
      * @return
      */
     public String build() {
+        esc.addQueryPrinterStatus();
         Vector<Byte> datas = esc.getCommand();
         byte[] bytes = GpUtils.ByteTo_byte(datas);
         return Base64.encodeToString(bytes, Base64.DEFAULT);
