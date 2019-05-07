@@ -9,7 +9,6 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.gprinter.aidl.GpService;
@@ -73,9 +72,7 @@ public class BaseGPPrinterManager {
             mActivity.unbindService(conn);
         }
         mActivity.unregisterReceiver(printerBroadcastReceiver);
-        timer.cancel();
-        timer.purge();
-        timer = null;
+        clearTask();
     }
 
     /**
@@ -117,21 +114,13 @@ public class BaseGPPrinterManager {
                 @Override
                 public void onPrintSucc() {
                     listener.onPrintSucc();
-                    if (timer != null) {
-                        timer.cancel();
-                        timer.purge();
-                        timer = null;
-                    }
+                    clearTask();
                 }
 
                 @Override
                 public void onPrintError(String error) {
                     listener.onPrintError(error);
-                    if (timer != null) {
-                        timer.cancel();
-                        timer.purge();
-                        timer = null;
-                    }
+                    clearTask();
                 }
             });
         }
@@ -246,6 +235,14 @@ public class BaseGPPrinterManager {
         Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT).show();
     }
 
+    private void clearTask() {
+        if (timer != null) {
+            timer.cancel();
+            timer.purge();
+            timer = null;
+        }
+    }
+
     class PrinterServiceConnection implements ServiceConnection {
 
         @Override
@@ -262,7 +259,6 @@ public class BaseGPPrinterManager {
     class ListenPrinterTask extends TimerTask {
         @Override
         public void run() {
-            Log.d("printer", "query status");
             queryPrinterStatus();
         }
     }
