@@ -326,7 +326,5 @@ public class GPPrinterConnActivity extends GPPrinterServiceActivity {
         connectedPrinterName = dataManager.getItem(clickedItem).name;
         dataManager.selectItem(clickedItem);
         adapter.notifyDataSetChanged();
-
-        PrinterConnectingManager.getInstance().setConnectingDeviceInfo(dataManager.getItem(clickedItem));
     }
 }

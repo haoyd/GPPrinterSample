@@ -147,6 +147,7 @@ public class BasePrinterManager {
 
         info.isConnected = true;
         GPPrinterDao.getInstance(mActivity).setBluetoothDeviceInfo(info);
+        PrinterConnectingManager.getInstance().setConnectingDeviceInfo(info);
     }
 
     /**
@@ -174,8 +175,6 @@ public class BasePrinterManager {
             rs = mGpService.sendEscCommand(DEFAULT_PRINTER_ID, data);
             GpCom.ERROR_CODE r = GpCom.ERROR_CODE.values()[rs];
             if (r != GpCom.ERROR_CODE.SUCCESS) {
-                Toast.makeText(mActivity.getApplicationContext(), "打印成功", Toast.LENGTH_SHORT).show();
-            } else {
                 Toast.makeText(mActivity.getApplicationContext(), GpCom.getErrorText(r), Toast.LENGTH_SHORT).show();
             }
         } catch (RemoteException e) {

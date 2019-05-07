@@ -3,7 +3,6 @@ package com.haoyd.printerlib.receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.gprinter.command.GpCom;
@@ -66,9 +65,7 @@ public class PrinterBroadcastReceiver extends BroadcastReceiver {
             int status = intent.getIntExtra(GpCom.EXTRA_PRINTER_REAL_STATUS, 16);
             String str = "打印机";
 
-            if (status == GpCom.STATE_NO_ERR) {
-                str += "正常";
-            } else {
+            if (status != GpCom.STATE_NO_ERR) {
                 if ((byte) (status & GpCom.STATE_OFFLINE) > 0) str += "脱机";
                 if ((byte) (status & GpCom.STATE_OFFLINE) > 0) str += "脱机";
                 if ((byte) (status & GpCom.STATE_PAPER_ERR) > 0) str += "缺纸";
@@ -77,9 +74,7 @@ public class PrinterBroadcastReceiver extends BroadcastReceiver {
                 if ((byte) (status & GpCom.STATE_TIMES_OUT) > 0) str += "查询超时";
             }
 
-            if (!TextUtils.isEmpty(str) && !str.contains("打印机正常")) {
-                Toast.makeText(mContext, "打印机状态：" + str, Toast.LENGTH_SHORT).show();
-            } else {
+            if (!str.equals("打印机")) {
                 printError(str);
             }
         } else if (requestCode == REQUEST_PRINT_RECEIPT) {
