@@ -11,9 +11,9 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class PrinterManager extends BasePrinterManager {
+public class GPPrinterManager extends BaseGPPrinterManager {
 
-    public PrinterManager(Activity mActivity) {
+    public GPPrinterManager(Activity mActivity) {
         super(mActivity);
     }
 

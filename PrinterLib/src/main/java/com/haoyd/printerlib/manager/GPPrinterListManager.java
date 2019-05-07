@@ -5,7 +5,7 @@ import com.haoyd.printerlib.entities.BluetoothDeviceInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrinterListManager {
+public class GPPrinterListManager {
 
     private List<BluetoothDeviceInfo> totalList = new ArrayList<>();
     private List<BluetoothDeviceInfo> pairdList = new ArrayList<>();

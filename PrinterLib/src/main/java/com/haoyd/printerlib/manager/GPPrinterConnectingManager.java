@@ -2,19 +2,19 @@ package com.haoyd.printerlib.manager;
 
 import com.haoyd.printerlib.entities.BluetoothDeviceInfo;
 
-public class PrinterConnectingManager {
+public class GPPrinterConnectingManager {
 
     private BluetoothDeviceInfo connectingDeviceInfo;
 
-    private static volatile PrinterConnectingManager singleton;
-    private PrinterConnectingManager() {
+    private static volatile GPPrinterConnectingManager singleton;
+    private GPPrinterConnectingManager() {
     }
 
-    public static PrinterConnectingManager getInstance() {
+    public static GPPrinterConnectingManager getInstance() {
         if (singleton == null) {
-            synchronized (PrinterConnectingManager.class) {
+            synchronized (GPPrinterConnectingManager.class) {
                 if (singleton == null) {
-                    singleton = new PrinterConnectingManager();
+                    singleton = new GPPrinterConnectingManager();
                 }
             }
         }

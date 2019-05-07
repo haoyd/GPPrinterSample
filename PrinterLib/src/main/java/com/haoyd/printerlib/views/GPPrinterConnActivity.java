@@ -23,9 +23,9 @@ import com.haoyd.printerlib.interfaces.RecyclerItemClickListener;
 import com.haoyd.printerlib.interfaces.bluetooth.OnBluetoothPairdChangedListener;
 import com.haoyd.printerlib.interfaces.bluetooth.OnFindNewBluetoothListener;
 import com.haoyd.printerlib.interfaces.bluetooth.OnFinishDiscoveryBluetoothListener;
-import com.haoyd.printerlib.manager.BluetoothDeviceManager;
-import com.haoyd.printerlib.manager.PrinterConnectingManager;
-import com.haoyd.printerlib.manager.PrinterListManager;
+import com.haoyd.printerlib.manager.GPBluetoothDeviceManager;
+import com.haoyd.printerlib.manager.GPPrinterConnectingManager;
+import com.haoyd.printerlib.manager.GPPrinterListManager;
 import com.haoyd.printerlib.utils.BluetoothUtil;
 import com.haoyd.printerlib.utils.SysBroadcastUtil;
 
@@ -50,13 +50,13 @@ public class GPPrinterConnActivity extends GPPrinterServiceActivity {
     /**
      * init tool
      */
-    private BluetoothDeviceManager bluetoothDeviceManager;      // 扫描蓝牙设备
+    private GPBluetoothDeviceManager bluetoothDeviceManager;      // 扫描蓝牙设备
     private SysBroadcastUtil sysBroadcastUtil;                  // 监听蓝牙扫描、配对结果广播
 
     /**
      * init variables
      */
-    private PrinterListManager dataManager;
+    private GPPrinterListManager dataManager;
     private boolean isPairdDeviceBacked = false;
     private String connectedPrinterName = "";
     private boolean canStopConn = false;
@@ -67,7 +67,7 @@ public class GPPrinterConnActivity extends GPPrinterServiceActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (printerManager.isConnecting()) {
-                dataManager.addPairdDevice(PrinterConnectingManager.getInstance().getConnectingDeviceInfo());
+                dataManager.addPairdDevice(GPPrinterConnectingManager.getInstance().getConnectingDeviceInfo());
                 adapter.setData(dataManager.getData());
                 bluetoothDeviceManager.cancelScan();
                 setLoadState(STATE_SUCCESS);
@@ -115,7 +115,7 @@ public class GPPrinterConnActivity extends GPPrinterServiceActivity {
     }
 
     public void loadView() {
-        dataManager = new PrinterListManager();
+        dataManager = new GPPrinterListManager();
         adapter = new GPPrinterListAdapter(this);
         adapter.setData(dataManager.getData());
 
@@ -125,7 +125,7 @@ public class GPPrinterConnActivity extends GPPrinterServiceActivity {
 
     public void loadData() {
         sysBroadcastUtil = new SysBroadcastUtil(this);
-        bluetoothDeviceManager = new BluetoothDeviceManager(this);
+        bluetoothDeviceManager = new GPBluetoothDeviceManager(this);
 
         disconnectWhenFinish = false;
     }

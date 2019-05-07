@@ -22,8 +22,8 @@ import com.haoyd.printerlib.liseners.OnPrintResultListener;
 import com.haoyd.printerlib.receivers.PrinterBroadcastReceiver;
 import com.haoyd.printerlib.utils.BluetoothUtil;
 
-import static com.haoyd.printerlib.PrinterConstant.DEFAULT_PRINTER_ID;
-import static com.haoyd.printerlib.PrinterConstant.MAIN_QUERY_PRINTER_STATUS;
+import static com.haoyd.printerlib.GPPrinterConstant.DEFAULT_PRINTER_ID;
+import static com.haoyd.printerlib.GPPrinterConstant.MAIN_QUERY_PRINTER_STATUS;
 
 /**
  * 该类集成了打印机操作的一些基本功能
@@ -33,14 +33,14 @@ import static com.haoyd.printerlib.PrinterConstant.MAIN_QUERY_PRINTER_STATUS;
  * 4、设置打印结果监听
  * 5、打印小票
  */
-public class BasePrinterManager {
+public class BaseGPPrinterManager {
 
     private Activity mActivity;
     private PrinterServiceConnection conn = null;
     private GpService mGpService = null;
     private PrinterBroadcastReceiver printerBroadcastReceiver = null;
 
-    public BasePrinterManager(Activity mActivity) {
+    public BaseGPPrinterManager(Activity mActivity) {
         this.mActivity = mActivity;
         printerBroadcastReceiver = new PrinterBroadcastReceiver();
     }
@@ -147,7 +147,7 @@ public class BasePrinterManager {
 
         info.isConnected = true;
         GPPrinterDao.getInstance(mActivity).setBluetoothDeviceInfo(info);
-        PrinterConnectingManager.getInstance().setConnectingDeviceInfo(info);
+        GPPrinterConnectingManager.getInstance().setConnectingDeviceInfo(info);
     }
 
     /**

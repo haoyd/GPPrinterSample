@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.haoyd.printerlib.liseners.OnPrintResultListener;
-import com.haoyd.printerlib.manager.PrinterManager;
+import com.haoyd.printerlib.manager.GPPrinterManager;
 import com.haoyd.printerlib.receivers.PrinterConnReceiverManager;
 
 /**
@@ -17,7 +17,7 @@ import com.haoyd.printerlib.receivers.PrinterConnReceiverManager;
  */
 public class GPPrinterServiceActivity extends AppCompatActivity implements OnPrintResultListener, PrinterConnReceiverManager.OnConnResultListener {
 
-    protected PrinterManager printerManager;
+    protected GPPrinterManager printerManager;
     private PrinterConnReceiverManager connReceiverManager;
 
     /**
@@ -29,7 +29,7 @@ public class GPPrinterServiceActivity extends AppCompatActivity implements OnPri
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        printerManager = new PrinterManager(this);
+        printerManager = new GPPrinterManager(this);
         connReceiverManager = new PrinterConnReceiverManager(this);
 
         processServiceBindLogic(true);

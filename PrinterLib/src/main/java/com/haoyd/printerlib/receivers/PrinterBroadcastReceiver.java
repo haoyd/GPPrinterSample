@@ -8,8 +8,8 @@ import android.widget.Toast;
 import com.gprinter.command.GpCom;
 import com.haoyd.printerlib.liseners.OnPrintResultListener;
 
-import static com.haoyd.printerlib.PrinterConstant.MAIN_QUERY_PRINTER_STATUS;
-import static com.haoyd.printerlib.PrinterConstant.REQUEST_PRINT_RECEIPT;
+import static com.haoyd.printerlib.GPPrinterConstant.MAIN_QUERY_PRINTER_STATUS;
+import static com.haoyd.printerlib.GPPrinterConstant.REQUEST_PRINT_RECEIPT;
 
 public class PrinterBroadcastReceiver extends BroadcastReceiver {
 

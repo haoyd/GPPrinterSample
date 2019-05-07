@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 import com.haoyd.printerlib.R;
 import com.haoyd.printerlib.entities.BluetoothDeviceInfo;
-import com.haoyd.printerlib.manager.PrinterManager;
+import com.haoyd.printerlib.manager.GPPrinterManager;
 import com.haoyd.printerlib.receivers.PrinterConnReceiverManager;
 
 import java.util.Set;
@@ -40,7 +40,7 @@ public class GPBluetoothDeviceListActivity extends Activity {
     private ArrayAdapter<String> mPairedDevicesArrayAdapter;
     private ArrayAdapter<String> mNewDevicesArrayAdapter;
 
-    private PrinterManager printerManager;
+    private GPPrinterManager printerManager;
     private PrinterConnReceiverManager printerConnReceiverManager;
 
 
@@ -66,7 +66,7 @@ public class GPBluetoothDeviceListActivity extends Activity {
         });
         getDeviceList();
 
-        printerManager = new PrinterManager(this);
+        printerManager = new GPPrinterManager(this);
         printerManager.bindService();
 
         printerConnReceiverManager = new PrinterConnReceiverManager(this);

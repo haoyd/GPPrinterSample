@@ -3,12 +3,12 @@ package com.haoyd.printerlib.manager;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 
-public class BluetoothDeviceManager {
+public class GPBluetoothDeviceManager {
 
     private Activity mActivity;
     private BluetoothAdapter mBluetoothAdapter;
 
-    public BluetoothDeviceManager(Activity mActivity) {
+    public GPBluetoothDeviceManager(Activity mActivity) {
         this.mActivity = mActivity;
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
