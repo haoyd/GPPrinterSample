@@ -91,7 +91,7 @@ public class BaseGPPrinterManager {
      */
     public void getPrinterStatus() {
         try {
-            mGpService.queryPrinterStatus(DEFAULT_PRINTER_ID, 500, MAIN_QUERY_PRINTER_STATUS);
+            mGpService.queryPrinterStatus(DEFAULT_PRINTER_ID, 1500, MAIN_QUERY_PRINTER_STATUS);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
