@@ -9,6 +9,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.gprinter.aidl.GpService;
@@ -21,6 +22,9 @@ import com.haoyd.printerlib.entities.BluetoothDeviceInfo;
 import com.haoyd.printerlib.liseners.OnPrintResultListener;
 import com.haoyd.printerlib.receivers.PrinterBroadcastReceiver;
 import com.haoyd.printerlib.utils.BluetoothUtil;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.haoyd.printerlib.GPPrinterConstant.DEFAULT_PRINTER_ID;
 import static com.haoyd.printerlib.GPPrinterConstant.MAIN_QUERY_PRINTER_STATUS;
@@ -39,6 +43,8 @@ public class BaseGPPrinterManager {
     private PrinterServiceConnection conn = null;
     private GpService mGpService = null;
     private PrinterBroadcastReceiver printerBroadcastReceiver = null;
+    private boolean needListenPrinterStatus = false;
+    private Timer timer = null;
 
     public BaseGPPrinterManager(Activity mActivity) {
         this.mActivity = mActivity;
@@ -67,6 +73,9 @@ public class BaseGPPrinterManager {
             mActivity.unbindService(conn);
         }
         mActivity.unregisterReceiver(printerBroadcastReceiver);
+        timer.cancel();
+        timer.purge();
+        timer = null;
     }
 
     /**
@@ -89,7 +98,7 @@ public class BaseGPPrinterManager {
     /**
      * 打印打印机当前状态
      */
-    public void getPrinterStatus() {
+    public void queryPrinterStatus() {
         try {
             mGpService.queryPrinterStatus(DEFAULT_PRINTER_ID, 1500, MAIN_QUERY_PRINTER_STATUS);
         } catch (RemoteException e1) {
@@ -102,9 +111,29 @@ public class BaseGPPrinterManager {
      * 设置打印状态监听
      * @param listener
      */
-    public void setOnPrinterConnResultListener(OnPrintResultListener listener) {
-        if (printerBroadcastReceiver != null) {
-            printerBroadcastReceiver.setOnPrintResultListener(listener);
+    public void setOnPrinterConnResultListener(final OnPrintResultListener listener) {
+        if (printerBroadcastReceiver != null && listener != null) {
+            printerBroadcastReceiver.setOnPrintResultListener(new OnPrintResultListener() {
+                @Override
+                public void onPrintSucc() {
+                    listener.onPrintSucc();
+                    if (timer != null) {
+                        timer.cancel();
+                        timer.purge();
+                        timer = null;
+                    }
+                }
+
+                @Override
+                public void onPrintError(String error) {
+                    listener.onPrintError(error);
+                    if (timer != null) {
+                        timer.cancel();
+                        timer.purge();
+                        timer = null;
+                    }
+                }
+            });
         }
     }
 
@@ -176,10 +205,16 @@ public class BaseGPPrinterManager {
             GpCom.ERROR_CODE r = GpCom.ERROR_CODE.values()[rs];
             if (r != GpCom.ERROR_CODE.SUCCESS) {
                 Toast.makeText(mActivity.getApplicationContext(), GpCom.getErrorText(r), Toast.LENGTH_SHORT).show();
+                return false;
             }
         } catch (RemoteException e) {
             e.printStackTrace();
             return false;
+        }
+
+        if (needListenPrinterStatus) {
+            timer = new Timer();
+            timer.schedule(new ListenPrinterTask(), 0, 1000);
         }
 
         return true;
@@ -194,6 +229,13 @@ public class BaseGPPrinterManager {
         if (bluetoothDeviceInfo != null) {
             connectToPrinter(bluetoothDeviceInfo);
         }
+    }
+
+    /**
+     * 打印过程中会监听打印机状态异常
+     */
+    public void setListenPrinterStatus(boolean needListenPrinterStatus) {
+        this.needListenPrinterStatus = needListenPrinterStatus;
     }
 
     private void toast(String msg) {
@@ -214,6 +256,14 @@ public class BaseGPPrinterManager {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mGpService = GpService.Stub.asInterface(service);
+        }
+    }
+
+    class ListenPrinterTask extends TimerTask {
+        @Override
+        public void run() {
+            Log.d("printer", "query status");
+            queryPrinterStatus();
         }
     }
 }

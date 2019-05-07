@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Switch;
-import android.widget.TabHost;
 import android.widget.Toast;
 
 import com.haoyd.printerlib.dao.GPPrinterDao;
@@ -22,6 +21,8 @@ public class MainActivity extends GPPrinterServiceActivity {
         setContentView(R.layout.activity_main);
 
         mSwitch = findViewById(R.id.switch_main);
+
+        printerManager.setListenPrinterStatus(true);
     }
 
 
@@ -53,6 +54,10 @@ public class MainActivity extends GPPrinterServiceActivity {
         printerManager.printTestTicket();
     }
 
+    public void queryPrinterStatus(View view) {
+        printerManager.queryPrinterStatus();
+    }
+
     @Override
     public void onConnSuccess() {
         super.onConnSuccess();
@@ -63,5 +68,11 @@ public class MainActivity extends GPPrinterServiceActivity {
     public void onDisconnect() {
         super.onDisconnect();
         mSwitch.setChecked(false);
+    }
+
+    @Override
+    public void onPrintError(String error) {
+        super.onPrintError(error);
+        toast(error);
     }
 }

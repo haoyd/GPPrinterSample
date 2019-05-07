@@ -67,10 +67,9 @@ public class PrinterBroadcastReceiver extends BroadcastReceiver {
 
             if (status != GpCom.STATE_NO_ERR) {
                 if ((byte) (status & GpCom.STATE_OFFLINE) > 0) str += "脱机";
-                if ((byte) (status & GpCom.STATE_OFFLINE) > 0) str += "脱机";
                 if ((byte) (status & GpCom.STATE_PAPER_ERR) > 0) str += "缺纸";
-                if ((byte) (status & GpCom.STATE_COVER_OPEN) > 0) str += "打印机开盖";
-                if ((byte) (status & GpCom.STATE_ERR_OCCURS) > 0) str += "打印机出错";
+                if ((byte) (status & GpCom.STATE_COVER_OPEN) > 0) str += "开盖";
+                if ((byte) (status & GpCom.STATE_ERR_OCCURS) > 0) str += "出错";
                 if ((byte) (status & GpCom.STATE_TIMES_OUT) > 0) str += "查询超时";
             }
 
