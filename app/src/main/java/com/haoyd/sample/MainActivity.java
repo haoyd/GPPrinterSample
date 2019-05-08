@@ -25,7 +25,6 @@ public class MainActivity extends GPPrinterServiceActivity {
         printerManager.setListenPrinterStatus(true);
     }
 
-
     public void selectPrinterOnNewPage(View view) {
         startActivity(new Intent(this, GPPrinterConnActivity.class));
     }
