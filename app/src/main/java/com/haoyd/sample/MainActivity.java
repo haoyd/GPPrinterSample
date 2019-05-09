@@ -25,6 +25,24 @@ public class MainActivity extends GPPrinterServiceActivity {
         printerManager.setListenPrinterStatus(true);
     }
 
+    @Override
+    public void onConnSuccess() {
+        super.onConnSuccess();
+        mSwitch.setChecked(true);
+    }
+
+    @Override
+    public void onDisconnect() {
+        super.onDisconnect();
+        mSwitch.setChecked(false);
+    }
+
+    @Override
+    public void onPrintError(String error) {
+        super.onPrintError(error);
+        toast(error);
+    }
+
     public void selectPrinterOnNewPage(View view) {
         startActivity(new Intent(this, GPPrinterConnActivity.class));
     }
@@ -57,21 +75,8 @@ public class MainActivity extends GPPrinterServiceActivity {
         printerManager.queryPrinterStatus();
     }
 
-    @Override
-    public void onConnSuccess() {
-        super.onConnSuccess();
-        mSwitch.setChecked(true);
-    }
+    public void lineSpacePrint(View view) {
+        printerManager.printTestTicketByLineSpace(80);
 
-    @Override
-    public void onDisconnect() {
-        super.onDisconnect();
-        mSwitch.setChecked(false);
-    }
-
-    @Override
-    public void onPrintError(String error) {
-        super.onPrintError(error);
-        toast(error);
     }
 }

@@ -55,7 +55,13 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="查询打印机状态"
+        android:text="查询打印机状态(正常情况无反馈)"
         android:onClick="queryPrinterStatus"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="扩大打印间距"
+        android:onClick="lineSpacePrint"/>
 
 </LinearLayout>
