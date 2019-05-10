@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.haoyd.printerlib.GPPrinterConfig;
 import com.haoyd.printerlib.dao.GPPrinterDao;
 import com.haoyd.printerlib.views.GPBluetoothDeviceListActivity;
 import com.haoyd.printerlib.views.GPPrinterConnActivity;
@@ -22,7 +23,8 @@ public class MainActivity extends GPPrinterServiceActivity {
 
         mSwitch = findViewById(R.id.switch_main);
 
-        printerManager.setListenPrinterStatus(true);
+        GPPrinterConfig.checkErrorWhenPrinting = true;
+        initPrintConfig();
     }
 
     @Override
@@ -40,7 +42,6 @@ public class MainActivity extends GPPrinterServiceActivity {
     @Override
     public void onPrintError(String error) {
         super.onPrintError(error);
-        toast(error);
     }
 
     public void selectPrinterOnNewPage(View view) {
@@ -77,6 +78,11 @@ public class MainActivity extends GPPrinterServiceActivity {
 
     public void lineSpacePrint(View view) {
         printerManager.printTestTicketByLineSpace(80);
+    }
 
+    private void initPrintConfig() {
+        GPPrinterConfig.checkErrorWhenPrinting = true;
+        GPPrinterConfig.showPrintStateDialog = true;
+        GPPrinterConfig.alertLackOfPager = true;
     }
 }

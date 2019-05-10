@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -16,11 +17,13 @@ import com.gprinter.command.GpCom;
 import com.gprinter.io.GpDevice;
 import com.gprinter.io.PortParameters;
 import com.gprinter.service.GpPrintService;
+import com.haoyd.printerlib.GPPrinterConfig;
 import com.haoyd.printerlib.dao.GPPrinterDao;
 import com.haoyd.printerlib.entities.BluetoothDeviceInfo;
 import com.haoyd.printerlib.liseners.OnPrintResultListener;
 import com.haoyd.printerlib.receivers.PrinterBroadcastReceiver;
 import com.haoyd.printerlib.utils.BluetoothUtil;
+import com.haoyd.printerlib.views.PrinterStatusDialog;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -42,12 +45,14 @@ public class BaseGPPrinterManager {
     private PrinterServiceConnection conn = null;
     private GpService mGpService = null;
     private PrinterBroadcastReceiver printerBroadcastReceiver = null;
-    private boolean needListenPrinterStatus = false;
     private Timer timer = null;
+    private PrinterStatusDialog.Builder printerStatusDialog;
+
 
     public BaseGPPrinterManager(Activity mActivity) {
         this.mActivity = mActivity;
         printerBroadcastReceiver = new PrinterBroadcastReceiver();
+        printerStatusDialog = new PrinterStatusDialog.Builder(mActivity);
     }
 
     /**
@@ -115,12 +120,29 @@ public class BaseGPPrinterManager {
                 public void onPrintSucc() {
                     listener.onPrintSucc();
                     clearTask();
+                    if (GPPrinterConfig.showPrintStateDialog) {
+                        printerStatusDialog.setModeSuccess();
+                    }
                 }
 
                 @Override
                 public void onPrintError(String error) {
                     listener.onPrintError(error);
                     clearTask();
+
+                    if (error.contains("缺纸") && GPPrinterConfig.alertLackOfPager) {
+                        if (printerStatusDialog.getMode() == PrinterStatusDialog.MODE_PRINTING) {
+                            printerStatusDialog.cancel();
+                        }
+
+                        new AlertDialog.Builder(mActivity)
+                                .setTitle("提示")
+                                .setMessage("打印机没有纸了，请先安装打印纸")
+                                .setPositiveButton("确定", null)
+                                .show();
+                    } else if (!error.contains("缺纸") && GPPrinterConfig.showPrintStateDialog) {
+                        printerStatusDialog.setModeError();
+                    }
                 }
             });
         }
@@ -201,7 +223,11 @@ public class BaseGPPrinterManager {
             return false;
         }
 
-        if (needListenPrinterStatus) {
+        if (GPPrinterConfig.showPrintStateDialog) {
+            printerStatusDialog.setModePrint();
+        }
+
+        if (GPPrinterConfig.checkErrorWhenPrinting) {
             timer = new Timer();
             timer.schedule(new ListenPrinterTask(), 0, 1000);
         }
@@ -220,12 +246,6 @@ public class BaseGPPrinterManager {
         }
     }
 
-    /**
-     * 打印过程中会监听打印机状态异常
-     */
-    public void setListenPrinterStatus(boolean needListenPrinterStatus) {
-        this.needListenPrinterStatus = needListenPrinterStatus;
-    }
 
     private void toast(String msg) {
         if (mActivity == null || TextUtils.isEmpty(msg)) {

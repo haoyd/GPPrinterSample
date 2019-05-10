@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:background="@android:color/transparent">
+
+    <RelativeLayout
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:background="@drawable/bg_dialog_real_time_work">
+
+        <ImageView
+            android:id="@+id/iv_printer_dialog"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="24dp"
+            android:src="@mipmap/gp_ic_printer_going"/>
+
+        <TextView
+            android:id="@+id/tv_printer_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/iv_printer_dialog"
+            android:layout_marginTop="13dp"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:text="正在打印"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

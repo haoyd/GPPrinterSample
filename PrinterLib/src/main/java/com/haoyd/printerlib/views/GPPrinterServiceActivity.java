@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.haoyd.printerlib.GPPrinterConfig;
+import com.haoyd.printerlib.dao.GPPrinterDao;
 import com.haoyd.printerlib.liseners.OnPrintResultListener;
 import com.haoyd.printerlib.manager.GPPrinterManager;
 import com.haoyd.printerlib.receivers.PrinterConnReceiverManager;
@@ -35,6 +37,10 @@ public class GPPrinterServiceActivity extends AppCompatActivity implements OnPri
         processServiceBindLogic(true);
 
         connReceiverManager.setResultListener(this);
+
+        if (GPPrinterConfig.autoConnectHistoryPrinter) {
+            connectHistoryPrinter();
+        }
     }
 
     @Override
@@ -78,7 +84,6 @@ public class GPPrinterServiceActivity extends AppCompatActivity implements OnPri
      */
     @Override
     public void onPrintError(String error) {
-
     }
 
     /**
@@ -108,5 +113,11 @@ public class GPPrinterServiceActivity extends AppCompatActivity implements OnPri
 
     protected void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    private void connectHistoryPrinter() {
+        if (GPPrinterDao.getInstance(this).hasHistoryPrinter()) {
+            printerManager.connToHistoryDevice();
+        }
     }
 }
