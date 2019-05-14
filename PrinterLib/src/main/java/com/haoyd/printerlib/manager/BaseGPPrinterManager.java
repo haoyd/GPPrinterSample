@@ -22,6 +22,7 @@ import com.haoyd.printerlib.dao.GPPrinterDao;
 import com.haoyd.printerlib.entities.BluetoothDeviceInfo;
 import com.haoyd.printerlib.liseners.OnPrintResultListener;
 import com.haoyd.printerlib.receivers.PrinterBroadcastReceiver;
+import com.haoyd.printerlib.utils.ActivityUtil;
 import com.haoyd.printerlib.utils.BluetoothUtil;
 import com.haoyd.printerlib.views.PrinterStatusDialog;
 
@@ -47,6 +48,7 @@ public class BaseGPPrinterManager {
     private PrinterBroadcastReceiver printerBroadcastReceiver = null;
     private Timer timer = null;
     private PrinterStatusDialog.Builder printerStatusDialog;
+    private OnPrintResultListener onPrintResultListener;
 
 
     public BaseGPPrinterManager(Activity mActivity) {
@@ -114,12 +116,19 @@ public class BaseGPPrinterManager {
      * @param listener
      */
     public void setOnPrinterConnResultListener(final OnPrintResultListener listener) {
+        this.onPrintResultListener = listener;
         if (printerBroadcastReceiver != null && listener != null) {
             printerBroadcastReceiver.setOnPrintResultListener(new OnPrintResultListener() {
                 @Override
                 public void onPrintSucc() {
-                    listener.onPrintSucc();
                     clearTask();
+
+                    // 如果该Activity非当前Activity只不进行回调处理
+                    if (!ActivityUtil.isActivityTop(mActivity)) {
+                        return;
+                    }
+
+                    listener.onPrintSucc();
                     if (GPPrinterConfig.showPrintStateDialog) {
                         printerStatusDialog.setModeSuccess();
                     }
@@ -127,8 +136,14 @@ public class BaseGPPrinterManager {
 
                 @Override
                 public void onPrintError(String error) {
-                    listener.onPrintError(error);
                     clearTask();
+
+                    // 如果该Activity非当前Activity只不进行回调处理
+                    if (!ActivityUtil.isActivityTop(mActivity)) {
+                        return;
+                    }
+
+                    listener.onPrintError(error);
 
                     if (error.contains("缺纸") && GPPrinterConfig.alertLackOfPager) {
                         if (printerStatusDialog.getMode() == PrinterStatusDialog.MODE_PRINTING) {
@@ -210,6 +225,28 @@ public class BaseGPPrinterManager {
      * @return
      */
     public boolean printTicket(String data) {
+        if (TextUtils.isEmpty(data)) {
+            callbackPrintErrorMsg("数据为空，不可打印~");
+            return false;
+        }
+
+        if (!BluetoothUtil.isSupportBluetooth()) {
+            callbackPrintErrorMsg("设备不支持蓝牙功能~");
+            return false;
+        }
+
+        // 蓝牙未开启
+        if (BluetoothUtil.isClosed()) {
+            callbackPrintErrorMsg("蓝牙未开启");
+            BluetoothUtil.forceOpenBluetooth();
+            return false;
+        }
+
+        if (!isConnecting()) {
+            callbackPrintErrorMsg("打印机未连接");
+            return false;
+        }
+
         int rs;
         try {
             rs = mGpService.sendEscCommand(DEFAULT_PRINTER_ID, data);
@@ -239,13 +276,17 @@ public class BaseGPPrinterManager {
      * 连接到历史打印机
      */
     public void connToHistoryDevice() {
-        BluetoothDeviceInfo bluetoothDeviceInfo = GPPrinterDao.getInstance(mActivity).getBluetoothDeviceInfo();
-
-        if (bluetoothDeviceInfo != null) {
-            connectToPrinter(bluetoothDeviceInfo);
+        if (!BluetoothUtil.isOpening()) {
+            return;
         }
-    }
 
+        BluetoothDeviceInfo bluetoothDeviceInfo = GPPrinterDao.getInstance(mActivity).getBluetoothDeviceInfo();
+        if (bluetoothDeviceInfo == null) {
+            return;
+        }
+
+        connectToPrinter(bluetoothDeviceInfo);
+    }
 
     private void toast(String msg) {
         if (mActivity == null || TextUtils.isEmpty(msg)) {
@@ -261,6 +302,18 @@ public class BaseGPPrinterManager {
             timer.purge();
             timer = null;
         }
+    }
+
+    /**
+     * 回调打印错误信息
+     * @param error
+     */
+    private void callbackPrintErrorMsg(String error) {
+        if (onPrintResultListener == null) {
+            return;
+        }
+
+        onPrintResultListener.onPrintError(error);
     }
 
     class PrinterServiceConnection implements ServiceConnection {
