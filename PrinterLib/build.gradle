@@ -22,6 +22,11 @@ android {
         }
     }
 
+    android.libraryVariants.all {
+        variant -> variant.outputs.all {
+            outputFileName = "GPrinterLib_" + android.defaultConfig.versionName + ".aar"
+        }
+    }
 }
 
 dependencies {
