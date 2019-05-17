@@ -42,7 +42,7 @@ import static com.haoyd.printerlib.GPPrinterConstant.MAIN_QUERY_PRINTER_STATUS;
  */
 public class BaseGPPrinterManager {
 
-    private Activity mActivity;
+    protected Activity mActivity;
     private PrinterServiceConnection conn = null;
     private GpService mGpService = null;
     private PrinterBroadcastReceiver printerBroadcastReceiver = null;
@@ -170,6 +170,7 @@ public class BaseGPPrinterManager {
      */
     public void connectToPrinter(BluetoothDeviceInfo info) {
         connect(info, true);
+        HistoryConnRecManager.setHistoryConnct(false);
     }
 
     /**
@@ -259,6 +260,7 @@ public class BaseGPPrinterManager {
         }
 
         connect(bluetoothDeviceInfo, false);
+        HistoryConnRecManager.setHistoryConnct(true);
     }
 
     private void toast(String msg) {

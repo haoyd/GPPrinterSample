@@ -2,7 +2,9 @@ package com.haoyd.printerlib.manager;
 
 import android.app.Activity;
 
+import com.haoyd.printerlib.dao.GPPrinterDao;
 import com.haoyd.printerlib.databuilder.PrintCommand;
+import com.haoyd.printerlib.entities.BluetoothDeviceInfo;
 import com.haoyd.printerlib.formats.GoodsColumnConfiger;
 import com.haoyd.printerlib.formats.GoodsFormatTemplate;
 
@@ -62,6 +64,22 @@ public class GPPrinterManager extends BaseGPPrinterManager {
         cmd.addMutiFeedLines(2);
 
         printTicket(cmd.build());
+    }
+
+    /**
+     * 是否存在历史记录
+     * @return
+     */
+    public boolean hasHistoryDevice() {
+        return GPPrinterDao.getInstance(mActivity).hasHistoryPrinter();
+    }
+
+    /**
+     * 获取打印历史记录
+     * @return
+     */
+    public BluetoothDeviceInfo getBluetoothDeviceInfo() {
+        return GPPrinterDao.getInstance(mActivity).getBluetoothDeviceInfo();
     }
 
 }

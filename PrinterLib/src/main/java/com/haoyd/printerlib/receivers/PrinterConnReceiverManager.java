@@ -7,6 +7,7 @@ import android.content.Intent;
 import com.gprinter.command.GpCom;
 import com.gprinter.io.GpDevice;
 import com.gprinter.service.GpPrintService;
+import com.haoyd.printerlib.manager.HistoryConnRecManager;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 public class PrinterConnReceiverManager extends BaseReceiverManager {
@@ -35,10 +36,10 @@ public class PrinterConnReceiverManager extends BaseReceiverManager {
 
         if (type == GpDevice.STATE_CONNECTING) {
             // 连接中
-            hud.show();
+            showHud();
         } else if (type == GpDevice.STATE_NONE) {
             // 连接失败 或 断开连接
-            hud.dismiss();
+            hideHud();
             if (resultListener != null) {
                 if (curState == GpDevice.STATE_CONNECTING) {
                     // 如果从正在连接状态转为断开，则为连接失败
@@ -50,13 +51,13 @@ public class PrinterConnReceiverManager extends BaseReceiverManager {
             }
         } else if (type == GpDevice.STATE_VALID_PRINTER) {
             // 连接成功
-            hud.dismiss();
+            hideHud();
             if (resultListener != null) {
                 resultListener.onConnSuccess();
             }
         } else if (type == GpDevice.STATE_INVALID_PRINTER) {
             // 不可用的打印机
-            hud.dismiss();
+            hideHud();
             if (resultListener != null) {
                 resultListener.onConnFail("非法打印机，请使用GPrinter");
             }
@@ -67,6 +68,20 @@ public class PrinterConnReceiverManager extends BaseReceiverManager {
 
     public void setResultListener(OnConnResultListener resultListener) {
         this.resultListener = resultListener;
+    }
+
+    private void showHud() {
+        if (hud == null || HistoryConnRecManager.isHistoryConnct()) {
+            return;
+        }
+        hud.show();
+    }
+
+    private void hideHud() {
+        if (hud == null || !hud.isShowing()) {
+            return;
+        }
+        hud.dismiss();
     }
 
     public interface OnConnResultListener {
