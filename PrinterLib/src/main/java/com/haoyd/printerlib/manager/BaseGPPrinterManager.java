@@ -49,7 +49,7 @@ public class BaseGPPrinterManager {
     private Timer timer = null;
     private PrinterStatusDialog.Builder printerStatusDialog;
     private OnPrintResultListener onPrintResultListener;
-
+    private boolean connectHistory = false;
 
     public BaseGPPrinterManager(Activity mActivity) {
         this.mActivity = mActivity;
@@ -169,40 +169,7 @@ public class BaseGPPrinterManager {
      * @return true：连接成功   false：连接失败
      */
     public void connectToPrinter(BluetoothDeviceInfo info) {
-        if (info == null) {
-            toast("数据错误");
-            return;
-        }
-
-        if (!BluetoothUtil.isOpening()) {
-            toast("请先开启蓝牙");
-            return;
-        }
-
-        int connStatus = 0;
-
-        try {
-            // 如果打印机已经连接了，就不要再重复连接了
-            if (mGpService != null && mGpService.getPrinterConnectStatus(0) == GpDevice.STATE_CONNECTED) {
-                return;
-            }
-
-            connStatus = mGpService.openPort(DEFAULT_PRINTER_ID, PortParameters.BLUETOOTH, info.address, 0);
-        } catch (Exception e) {
-            toast("连接失败");
-            return;
-        }
-
-        GpCom.ERROR_CODE r = GpCom.ERROR_CODE.values()[connStatus];
-
-        if (r != GpCom.ERROR_CODE.SUCCESS) {
-            toast(GpCom.getErrorText(r));
-            return;
-        }
-
-        info.isConnected = true;
-        GPPrinterDao.getInstance(mActivity).setBluetoothDeviceInfo(info);
-        GPPrinterConnectingManager.getInstance().setConnectingDeviceInfo(info);
+        connect(info, true);
     }
 
     /**
@@ -276,6 +243,8 @@ public class BaseGPPrinterManager {
      * 连接到历史打印机
      */
     public void connToHistoryDevice() {
+        connectHistory = true;
+
         if (!BluetoothUtil.isOpening()) {
             return;
         }
@@ -285,7 +254,11 @@ public class BaseGPPrinterManager {
             return;
         }
 
-        connectToPrinter(bluetoothDeviceInfo);
+        if (mGpService == null) {
+            return;
+        }
+
+        connect(bluetoothDeviceInfo, false);
     }
 
     private void toast(String msg) {
@@ -316,6 +289,56 @@ public class BaseGPPrinterManager {
         onPrintResultListener.onPrintError(error);
     }
 
+    /**
+     * 连接打印机
+     * @param info      // 打印机信息
+     * @param showErrorToast    // 当发生错误时是否toast error信息
+     */
+    private void connect(BluetoothDeviceInfo info, boolean showErrorToast) {
+        if (info == null) {
+            if (showErrorToast) {
+                toast("数据错误");
+            }
+            return;
+        }
+
+        if (!BluetoothUtil.isOpening()) {
+            if (showErrorToast) {
+                toast("请先开启蓝牙");
+            }
+            return;
+        }
+
+        int connStatus = 0;
+
+        try {
+            // 如果打印机已经连接了，就不要再重复连接了
+            if (mGpService != null && mGpService.getPrinterConnectStatus(0) == GpDevice.STATE_CONNECTED) {
+                return;
+            }
+
+            connStatus = mGpService.openPort(DEFAULT_PRINTER_ID, PortParameters.BLUETOOTH, info.address, 0);
+        } catch (Exception e) {
+            if (showErrorToast) {
+                toast("连接失败");
+            }
+            return;
+        }
+
+        GpCom.ERROR_CODE r = GpCom.ERROR_CODE.values()[connStatus];
+
+        if (r != GpCom.ERROR_CODE.SUCCESS) {
+            if (showErrorToast) {
+                toast(GpCom.getErrorText(r));
+            }
+            return;
+        }
+
+        info.isConnected = true;
+        GPPrinterDao.getInstance(mActivity).setBluetoothDeviceInfo(info);
+        GPPrinterConnectingManager.getInstance().setConnectingDeviceInfo(info);
+    }
+
     class PrinterServiceConnection implements ServiceConnection {
 
         @Override
@@ -326,6 +349,10 @@ public class BaseGPPrinterManager {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mGpService = GpService.Stub.asInterface(service);
+
+            if (connectHistory && !isConnecting()) {
+                connToHistoryDevice();
+            }
         }
     }
 

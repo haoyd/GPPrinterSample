@@ -61,6 +61,7 @@ public class GPPrinterConnActivity extends GPPrinterServiceActivity {
     private String connectedPrinterName = "";
     private boolean canStopConn = false;
     private int clickedItem = -1;
+    private long scanTime = 0;
 
     private Handler delayProcessStateHandler = new Handler() {
         @Override
@@ -89,11 +90,6 @@ public class GPPrinterConnActivity extends GPPrinterServiceActivity {
             setLoadState(STATE_LOADING);
         }
         delayProcessStateHandler.sendEmptyMessageDelayed(1, 100);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -178,6 +174,10 @@ public class GPPrinterConnActivity extends GPPrinterServiceActivity {
             @Override
             public void onFinish() {
                 setLoadState(STATE_NORMAL);
+
+                if (System.currentTimeMillis() - scanTime > 1500) {
+                    canStopConn = true;
+                }
 
                 if (isPairdDeviceBacked) {
                     return;
@@ -288,6 +288,8 @@ public class GPPrinterConnActivity extends GPPrinterServiceActivity {
 
     private boolean doScanWork() {
         if (BluetoothUtil.isOpening()) {
+            scanTime = System.currentTimeMillis();
+
             isPairdDeviceBacked = false;
             dataManager.clear();
 
