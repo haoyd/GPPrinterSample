@@ -9,6 +9,7 @@ import com.haoyd.printerlib.GPPrinterConfig;
 import com.haoyd.printerlib.dao.GPPrinterDao;
 import com.haoyd.printerlib.liseners.OnPrintResultListener;
 import com.haoyd.printerlib.manager.GPPrinterManager;
+import com.haoyd.printerlib.manager.HistoryConnRecManager;
 import com.haoyd.printerlib.receivers.PrinterConnReceiverManager;
 
 /**
@@ -100,7 +101,9 @@ public class GPPrinterServiceActivity extends AppCompatActivity implements OnPri
      */
     @Override
     public void onConnFail(String error) {
-        toast(error);
+        if (!HistoryConnRecManager.isHistoryConnct()) {
+            toast(error);
+        }
     }
 
     /**
