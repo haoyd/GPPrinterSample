@@ -16,6 +16,8 @@ allprojects {
 	
 dependencies {
     implementation 'com.github.haoyd:GPPrinterSample:0.0.7'
+    implementation 'com.android.support:recyclerview-v7:27.0.0'
+    implementation 'com.kaopiz:kprogresshud:1.2.0'
 }	
 ```
 
